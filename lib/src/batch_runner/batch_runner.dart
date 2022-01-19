@@ -124,7 +124,6 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
 
   /// Clears all the data including the use cases then emits a
   /// [BatchRunnerInitial].
-  @override
   Future<void> reset() async {
     final actionToken = requestNewActionToken();
 

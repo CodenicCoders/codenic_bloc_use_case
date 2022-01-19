@@ -1,8 +1,11 @@
+// ignore_for_file: avoid_print
+
 part of 'main.dart';
 
 Future<void> watcher() async {
   print(
-      '\n//******************** WATCHER USE CASE SAMPLE ********************');
+    '\n//******************** WATCHER USE CASE SAMPLE ********************',
+  );
 
   print('\n** INITIALIZE WATCHER **');
 
