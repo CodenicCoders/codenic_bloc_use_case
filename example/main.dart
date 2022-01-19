@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -66,7 +68,8 @@ class SimpleBlocObserver extends BlocObserver {
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
     print(
-        '\nonTransition -- bloc: ${bloc.runtimeType}, transition: $transition');
+      '\nonTransition -- bloc: ${bloc.runtimeType}, transition: $transition',
+    );
   }
 
   @override
