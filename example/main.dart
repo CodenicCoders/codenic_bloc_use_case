@@ -14,6 +14,9 @@ part 'paginator_sample.dart';
 part 'runner_sample.dart';
 part 'watcher_sample.dart';
 
+/// To view the entire code example, see
+/// https://github.com/CodenicCoders/codenic_bloc_use_case/tree/master/example
+
 Future<void> main() async {
   print(
     'Enter [0] for Runner, '

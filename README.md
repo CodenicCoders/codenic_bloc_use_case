@@ -14,3 +14,7 @@ A suite of abstract cubits to reduce boilerplate code and construct app use case
 Inspired by Reso Coder's [Flutter TDD Clean Architecture](https://resocoder.com/flutter-clean-architecture-tdd/).
 
 **Documentation in progress**
+
+## Features
+
+Use this package in your app to:

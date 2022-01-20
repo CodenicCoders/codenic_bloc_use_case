@@ -9,7 +9,8 @@ import 'package:test/test.dart';
 ///
 /// A stream use case that emits succeeding even numbers respective to
 /// the given incrementor value.
-class TestWatchEvenNumbers extends Watcher<int, String, String, int> {
+class TestWatchEvenNumbers
+    extends Watcher<int, String, VerboseStream<String, int>, String, int> {
   int _currentValue = 0;
   int _incrementor = 0;
 
@@ -69,7 +70,13 @@ void main() {
             'should emit new value when stream start succeeds',
             build: () => watcher,
             act: (watcher) => watcher.watch(params: 2),
-            expect: () => const [StartWatching(1), StartWatchSuccess(1)],
+            expect: () => [
+              const StartWatching(1),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                1,
+              ),
+            ],
           );
 
           blocTest<TestWatchEvenNumbers, WatcherState>(
@@ -79,10 +86,13 @@ void main() {
               await watcher.watch(params: 2);
               watcher.nextEvenNumber();
             },
-            expect: () => const [
-              StartWatching(1),
-              StartWatchSuccess(1),
-              WatchDataReceived(2, 1),
+            expect: () => [
+              const StartWatching(1),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                1,
+              ),
+              const WatchDataReceived(2, 1),
             ],
           );
 
@@ -93,10 +103,14 @@ void main() {
               await watcher.watch(params: 2);
               watcher.sendError(Exception('Error Event Emitted'));
             },
-            expect: () => const [
-              StartWatching(1),
-              StartWatchSuccess(1),
-              WatchErrorReceived<String>('Exception: Error Event Emitted', 1),
+            expect: () => [
+              const StartWatching(1),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                1,
+              ),
+              const WatchErrorReceived<String>(
+                  'Exception: Error Event Emitted', 1),
             ],
           );
 
@@ -107,8 +121,14 @@ void main() {
               await watcher.watch(params: 2);
               watcher.closeStream();
             },
-            expect: () =>
-                const [StartWatching(1), StartWatchSuccess(1), WatchDone(1)],
+            expect: () => [
+              const StartWatching(1),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                1,
+              ),
+              const WatchDone(1),
+            ],
           );
 
           blocTest<TestWatchEvenNumbers, WatcherState>(
@@ -121,10 +141,14 @@ void main() {
                 ..sendError(Exception('Error Event Emitted'))
                 ..nextEvenNumber();
             },
-            expect: () => const [
-              StartWatching(1),
-              StartWatchSuccess(1),
-              WatchErrorReceived<String>('Exception: Error Event Emitted', 1),
+            expect: () => [
+              const StartWatching(1),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                1,
+              ),
+              const WatchErrorReceived<String>(
+                  'Exception: Error Event Emitted', 1),
             ],
           );
 
@@ -138,11 +162,17 @@ void main() {
                 ..sendError(Exception('Error Event Emitted'))
                 ..nextEvenNumber();
             },
-            expect: () => const [
-              StartWatching(1),
-              StartWatchSuccess(1),
-              WatchErrorReceived<String>('Exception: Error Event Emitted', 1),
-              WatchDataReceived<int>(2, 1),
+            expect: () => [
+              const StartWatching(1),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                1,
+              ),
+              const WatchErrorReceived<String>(
+                'Exception: Error Event Emitted',
+                1,
+              ),
+              const WatchDataReceived<int>(2, 1),
             ],
           );
 
@@ -154,7 +184,13 @@ void main() {
               watcher.watch(params: 2),
               watcher.watch(params: 2),
             ]),
-            expect: () => const [StartWatching(2), StartWatchSuccess(2)],
+            expect: () => [
+              const StartWatching(2),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                2,
+              ),
+            ],
           );
 
           blocTest<TestWatchEvenNumbers, WatcherState>(
@@ -166,10 +202,13 @@ void main() {
               await ensureAsync();
               await watcher.watch(params: 2);
             },
-            expect: () => const [
-              StartWatching(1),
-              StartWatching(2),
-              StartWatchSuccess(2)
+            expect: () => [
+              const StartWatching(1),
+              const StartWatching(2),
+              StartWatchSuccess<VerboseStream<String, int>>(
+                watcher.rightValue!,
+                2,
+              ),
             ],
           );
         },
@@ -402,10 +441,10 @@ void main() {
               await watcher.watch(params: 2);
               await watcher.reset();
             },
-            expect: () => const [
-              StartWatching(1),
-              StartWatchSuccess(1),
-              WatcherInitial(2),
+            expect: () => [
+              const StartWatching(1),
+              isA<StartWatchSuccess>(),
+              const WatcherInitial(2),
             ],
           );
         },

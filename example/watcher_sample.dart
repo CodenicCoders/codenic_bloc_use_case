@@ -84,8 +84,8 @@ void printWatchResults(Watcher watcher) {
 
 /// A sample watcher use case for streaming the fruits that goes inside the
 /// fruit basket.
-class WatchFruitBasket
-    extends Watcher<WatchFruitBasketParams, Failure, Failure, FruitBasket> {
+class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
+    VerboseStream<Failure, FruitBasket>, Failure, FruitBasket> {
   StreamController<FruitBasket>? streamController;
   int? basketCapacity;
   List<String>? fruits;
