@@ -22,4 +22,7 @@ class PageResultItemList<T extends Object, U extends PageResult<T>>
 
   @override
   List<Object?> get props => [...pageResults];
+
+  @override
+  String toString() => super.toList().toString();
 }
