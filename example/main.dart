@@ -48,4 +48,3 @@ Future<void> main() async {
     blocObserver: SimpleBlocObserver(),
   );
 }
-

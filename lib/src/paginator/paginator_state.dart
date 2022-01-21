@@ -41,9 +41,19 @@ class PaginatorInitial extends PaginatorState {
 /// The initial state emitted when [Paginator.loadFirstPage] is called.
 ///
 /// {@endtemplate}
-class FirstPageLoading extends PaginatorState {
+class PageLoading extends PaginatorState {
   /// {@macro FirstPageLoading}
-  const FirstPageLoading(int paginateToken) : super(paginateToken);
+  const PageLoading(this.pageIndex, int paginateToken) : super(paginateToken);
+
+  /// {@template pageIndex}
+  ///
+  /// The index of the page being loaded.
+  ///
+  /// {@endtemplate}
+  final int pageIndex;
+
+  @override
+  List<Object?> get props => super.props..add(pageIndex);
 }
 
 /// {@template FirstPageLoadFailed}
@@ -51,13 +61,16 @@ class FirstPageLoading extends PaginatorState {
 /// The state emitted when [Paginator.loadFirstPage] call fails.
 ///
 /// {@endtemplate}
-class FirstPageLoadFailed<L> extends PaginatorState {
+class PageLoadFailed<L> extends PaginatorState {
   /// {@macro FirstPageLoadFailed}
-  const FirstPageLoadFailed(this.leftValue, int paginateToken)
+  const PageLoadFailed(this.leftValue, this.pageIndex, int paginateToken)
       : super(paginateToken);
 
   /// {@macro leftValue}
   final L leftValue;
+
+  /// {@macro pageIndex}
+  final int pageIndex;
 
   @override
   List<Object?> get props => super.props..add(leftValue);
@@ -68,59 +81,19 @@ class FirstPageLoadFailed<L> extends PaginatorState {
 /// The state emitted when a [Paginator.loadFirstPage] call succeeds.
 ///
 /// {@endtemplate}
-class FirstPageLoadSuccess<T extends Object> extends PaginatorState {
+class PageLoadSuccess<T extends Object> extends PaginatorState {
   /// {@macro FirstPageLoadSuccess}
-  const FirstPageLoadSuccess(this.pageResultItemList, int paginateToken)
-      : super(paginateToken);
+  const PageLoadSuccess(
+    this.pageResultItemList,
+    this.pageIndex,
+    int paginateToken,
+  ) : super(paginateToken);
 
   /// {@macro pageResultItemList}
   final PageResultItemList<T, PageResult<T>> pageResultItemList;
 
-  @override
-  List<Object?> get props => super.props..add(pageResultItemList);
-}
-
-/// {@template NextPageLoading}
-///
-/// The initial state emitted when [Paginator.loadNextPage] is called
-/// and a next page is available.
-///
-/// {@endtemplate}
-class NextPageLoading extends PaginatorState {
-  /// {@macro NextPageLoading}
-  const NextPageLoading(int paginateToken) : super(paginateToken);
-}
-
-/// {@template NextPageLoadFailed}
-///
-/// The state emitted when [Paginator.loadNextPage] call fails.
-///
-/// {@endtemplate}
-class NextPageLoadFailed<L> extends PaginatorState {
-  /// {@macro NextPageLoadFailed}
-  const NextPageLoadFailed(this.leftValue, int paginateToken)
-      : super(paginateToken);
-
-  /// {@macro leftValue}
-  final L leftValue;
-
-  @override
-  List<Object?> get props => super.props..add(leftValue);
-}
-
-/// {@template NextPageLoadSuccess}
-///
-/// The state emitted when [Paginator.loadNextPage] succeeds and a
-/// next page is still available.
-///
-/// {@endtemplate}
-class NextPageLoadSuccess<T extends Object> extends PaginatorState {
-  /// {@macro NextPageLoadSuccess}
-  const NextPageLoadSuccess(this.pageResultItemList, int paginateToken)
-      : super(paginateToken);
-
-  /// {@macro pageResultItemList}
-  final PageResultItemList<T, PageResult<T>> pageResultItemList;
+  /// {@macro pageIndex}
+  final int pageIndex;
 
   @override
   List<Object?> get props => super.props..add(pageResultItemList);

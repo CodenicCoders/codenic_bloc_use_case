@@ -110,7 +110,9 @@ void main() {
                 1,
               ),
               const WatchErrorReceived<String>(
-                  'Exception: Error Event Emitted', 1),
+                'Exception: Error Event Emitted',
+                1,
+              ),
             ],
           );
 
@@ -148,7 +150,9 @@ void main() {
                 1,
               ),
               const WatchErrorReceived<String>(
-                  'Exception: Error Event Emitted', 1),
+                'Exception: Error Event Emitted',
+                1,
+              ),
             ],
           );
 

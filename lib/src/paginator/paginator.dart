@@ -28,7 +28,19 @@ part 'paginator_state.dart';
 abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
     extends DistinctCubit<PaginatorState> with BaseUseCase<P, L, R> {
   /// {@macro Paginator}
-  Paginator() : super(const PaginatorInitial(DistinctCubit.initialActionToken));
+  Paginator()
+      : super(
+          const PaginatorInitial(DistinctCubit.initialActionToken),
+        );
+
+  static const _initialPageIndex = -1;
+
+  int _currentPageIndex = _initialPageIndex;
+
+  /// The index of the last page loaded.
+  ///
+  /// If no page is currently loaded, then this is set to `-1`.
+  int get currentPageIndex => _currentPageIndex;
 
   /// The parameter used for fetching the first page at [loadFirstPage]
   /// which will also be used to fetch the next page at [loadNextPage].
@@ -102,16 +114,18 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
 
   /// Loads the first page.
   ///
-  /// This will initially emit a [FirstPageLoading] state followed either by a
-  /// [FirstPageLoadFailed] or [FirstPageLoadSuccess].
+  /// This will initially emit a [PageLoading] state followed either by a
+  /// [PageLoadFailed] or [PageLoadSuccess].
   Future<void> loadFirstPage({required P params}) async {
     final actionToken = requestNewActionToken();
 
     await ensureAsync();
 
+    final pageIndex = currentPageIndex + 1;
+
     if (distinctEmit(
           actionToken,
-          () => FirstPageLoading(actionToken),
+          () => PageLoading(pageIndex, actionToken),
         ) ==
         null) {
       return;
@@ -125,15 +139,17 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
         value = result;
 
         return result.fold(
-          (l) => FirstPageLoadFailed<L>(l, actionToken),
+          (l) => PageLoadFailed<L>(l, pageIndex, actionToken),
           (r) {
             _params = params;
+            _currentPageIndex = pageIndex;
 
             final newPageResultItemList =
                 PageResultItemList<T, R>(UnmodifiableListView([r]));
 
-            return FirstPageLoadSuccess(
+            return PageLoadSuccess(
               _pageResultItemList = newPageResultItemList,
+              pageIndex,
               actionToken,
             );
           },
@@ -144,17 +160,17 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
 
   /// Loads the next page.
   ///
-  /// If the [loadFirstPage] has not been successfully called yet, then this
-  /// will throw a [StateError].
+  /// If the [loadFirstPage] has not been successfully called yet or the 
+  /// [currentPageIndex] is equal to `-1`, then this will throw a [StateError].
   ///
-  /// This will initially emit a [NextPageLoading] state. If an error occurs
-  /// while a fetching the next page, then a [NextPageLoadFailed] will be
+  /// This will initially emit a [PageLoading] state. If an error occurs
+  /// while a fetching the next page, then a [PageLoadFailed] will be
   /// emitted. Otherwise, of the next page has successfully been fetched, then
-  /// either a [NextPageLoadSuccess] or [LastPageLoaded] will be emitted.
+  /// either a [PageLoadSuccess] or [LastPageLoaded] will be emitted.
   Future<void> loadNextPage() async {
     final actionToken = requestNewActionToken();
 
-    if (rightValue == null) {
+    if (currentPageIndex == _initialPageIndex) {
       throw StateError(
         'Cannot load next page when first page has not been loaded yet',
       );
@@ -162,12 +178,14 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
 
     await ensureAsync();
 
+    final pageIndex = _currentPageIndex + 1;
+
     if (distinctEmit(actionToken, () {
       if (rightValue!.nextPageToken == null) {
         return LastPageLoaded(actionToken);
       }
 
-      return NextPageLoading(actionToken);
+      return PageLoading(pageIndex, actionToken);
     }) is LastPageLoaded) {
       return;
     }
@@ -180,14 +198,17 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
         value = result;
 
         return result.fold(
-          (l) => NextPageLoadFailed<L>(l, actionToken),
+          (l) => PageLoadFailed<L>(l, pageIndex, actionToken),
           (r) {
+            _currentPageIndex = pageIndex;
+
             final newPageResultCollection = PageResultItemList<T, R>(
               UnmodifiableListView([..._pageResultItemList!.pageResults, r]),
             );
 
-            return NextPageLoadSuccess(
+            return PageLoadSuccess(
               _pageResultItemList = newPageResultCollection,
+              pageIndex,
               actionToken,
             );
           },
@@ -208,6 +229,8 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
       () {
         super.reset();
         _pageResultItemList = null;
+        _currentPageIndex = _initialPageIndex;
+
         return PaginatorInitial(actionToken);
       },
     );

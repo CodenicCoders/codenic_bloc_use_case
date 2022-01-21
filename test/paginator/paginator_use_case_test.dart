@@ -67,8 +67,8 @@ void main() {
             build: TestPaginateFruits.new,
             act: (paginator) => paginator.loadFirstPage(params: 2),
             expect: () => [
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -77,6 +77,7 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
             ],
@@ -87,9 +88,10 @@ void main() {
             build: TestPaginateFruits.new,
             act: (paginator) => paginator.loadFirstPage(params: 0),
             expect: () => const [
-              FirstPageLoading(1),
-              FirstPageLoadFailed<String>(
+              PageLoading(0, 1),
+              PageLoadFailed<String>(
                 'Page item count must be greater than 0',
+                0,
                 1,
               ),
             ],
@@ -104,8 +106,8 @@ void main() {
               paginator.loadFirstPage(params: 2),
             ]),
             expect: () => [
-              const FirstPageLoading(2),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 2),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -114,6 +116,7 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 2,
               ),
             ],
@@ -129,9 +132,9 @@ void main() {
               await paginator.loadFirstPage(params: 2);
             },
             expect: () => [
-              const FirstPageLoading(1),
-              const FirstPageLoading(2),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              const PageLoading(0, 2),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -140,6 +143,7 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 2,
               ),
             ],
@@ -154,8 +158,21 @@ void main() {
               await paginator.loadFirstPage(params: 2);
             },
             expect: () => [
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
+                PageResultItemList(
+                  UnmodifiableListView([
+                    PageResult(
+                      UnmodifiableListView(['Apple', 'Orange']),
+                      'Orange',
+                    ),
+                  ]),
+                ),
+                0,
+                1,
+              ),
+              const PageLoading(1, 2),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -165,17 +182,6 @@ void main() {
                   ]),
                 ),
                 1,
-              ),
-              const FirstPageLoading(2),
-              FirstPageLoadSuccess<String>(
-                PageResultItemList(
-                  UnmodifiableListView([
-                    PageResult(
-                      UnmodifiableListView(['Apple', 'Orange']),
-                      'Orange',
-                    ),
-                  ]),
-                ),
                 2,
               ),
             ],
@@ -191,8 +197,8 @@ void main() {
               await paginator.loadNextPage();
             },
             expect: () => [
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -201,15 +207,17 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
-              const FirstPageLoading(2),
-              const FirstPageLoadFailed(
+              const PageLoading(1, 2),
+              const PageLoadFailed(
                 'Page item count must be greater than 0',
+                1,
                 2,
               ),
-              const NextPageLoading(3),
-              NextPageLoadSuccess<String>(
+              const PageLoading(1, 3),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -222,6 +230,7 @@ void main() {
                     ),
                   ]),
                 ),
+                2,
                 3,
               ),
             ],
@@ -240,8 +249,8 @@ void main() {
               await paginator.loadNextPage();
             },
             expect: () => [
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -250,10 +259,11 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
-              const NextPageLoading(2),
-              NextPageLoadSuccess<String>(
+              const PageLoading(1, 2),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -266,6 +276,7 @@ void main() {
                     ),
                   ]),
                 ),
+                1,
                 2,
               ),
             ],
@@ -288,8 +299,8 @@ void main() {
               await paginator.loadNextPage();
             },
             expect: () => <PaginatorState>[
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -298,10 +309,11 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
-              const NextPageLoading(2),
-              const NextPageLoadFailed<String>('Test failure', 2),
+              const PageLoading(1, 2),
+              const PageLoadFailed<String>('Test failure', 1, 2),
             ],
           );
 
@@ -315,8 +327,8 @@ void main() {
               await paginator.loadNextPage();
             },
             expect: () => <PaginatorState>[
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -325,10 +337,11 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
-              const NextPageLoading(2),
-              NextPageLoadSuccess<String>(
+              const PageLoading(1, 2),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -341,10 +354,11 @@ void main() {
                     ),
                   ]),
                 ),
+                1,
                 2,
               ),
-              const NextPageLoading(3),
-              NextPageLoadSuccess<String>(
+              const PageLoading(2, 3),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -358,6 +372,7 @@ void main() {
                     PageResult(UnmodifiableListView([]), null),
                   ]),
                 ),
+                2,
                 3,
               ),
               const LastPageLoaded(4),
@@ -377,8 +392,8 @@ void main() {
               ]);
             },
             expect: () => <PaginatorState>[
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -387,10 +402,11 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
-              const NextPageLoading(3),
-              NextPageLoadSuccess<String>(
+              const PageLoading(1, 3),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -403,6 +419,7 @@ void main() {
                     ),
                   ]),
                 ),
+                1,
                 3,
               ),
             ],
@@ -419,8 +436,8 @@ void main() {
               await paginator.loadNextPage();
             },
             expect: () => <PaginatorState>[
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -429,11 +446,12 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
-              const NextPageLoading(2),
-              const NextPageLoading(3),
-              NextPageLoadSuccess<String>(
+              const PageLoading(1, 2),
+              const PageLoading(1, 3),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -446,6 +464,7 @@ void main() {
                     ),
                   ]),
                 ),
+                1,
                 3,
               ),
             ],
@@ -583,6 +602,21 @@ void main() {
       );
 
       group(
+        'Current page index',
+        () {
+          blocTest<Paginator, PaginatorState>(
+            'should set page index to initial value when reset',
+            build: TestPaginateFruits.new,
+            act: (paginator) async {
+              await paginator.loadFirstPage(params: 2);
+              await paginator.reset();
+            },
+            verify: (paginator) => expect(paginator.currentPageIndex, -1),
+          );
+        },
+      );
+
+      group(
         'page result item list',
         () {
           blocTest<Paginator, PaginatorState>(
@@ -628,8 +662,8 @@ void main() {
               await paginator.reset();
             },
             expect: () => <PaginatorState>[
-              const FirstPageLoading(1),
-              FirstPageLoadSuccess<String>(
+              const PageLoading(0, 1),
+              PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
                     PageResult(
@@ -638,6 +672,7 @@ void main() {
                     ),
                   ]),
                 ),
+                0,
                 1,
               ),
               const PaginatorInitial(2),

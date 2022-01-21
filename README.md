@@ -26,13 +26,13 @@ Use this package in your app to:
 
 This section contains detailed information for the following topics:
 
-- [The Runner Use Case](the-runner-use-case)
-  - [Creating a Runner](creating-a-runner)
-  - [Using a Runner](using-a-runner)
-- [The Paginator Use Case](the-paginator-use-case)
-  - [Creating a Paginator](creating-a-paginator)
-  - [Creating a Custom Page Result](creating-a-custom-page-result)
-  - [Using a Paginator](using-a-paginator)
+- [The Runner Use Case](#the-runner-use-case)
+  - [Creating a Runner](#creating-a-runner)
+  - [Using a Runner](#using-a-runner)
+- [The Paginator Use Case](#the-paginator-use-case)
+  - [Creating a Paginator](#creating-a-paginator)
+  - [Creating a Custom Page Result](#creating-a-custom-page-result)
+  - [Using a Paginator](#using-a-paginator)
 
 ### The Runner Use Case
 
@@ -129,13 +129,17 @@ A use case for fetching a list of items in a paginated manner.
 
 A paginator has two available methods for loading pages.
 
-To start paginating, `Paginator.loadFirstPage()` must be called first. This accepts a given parameter arguments for loading the first page. If the loading fails, then a `Left` value is returned. Otherwise, if the loading succeeds, a `Right` value instance of `PageResult` and a `PageResultListItem` will be returned.
+To start paginating, `Paginator.loadFirstPage()` must initially be called. This accepts some given parameter arguments for loading the first page. If the loading fails, then a `Left` value is returned. Otherwise, if the loading succeeds, a `Right` value instance of `PageResult` and a `PageResultListItem` will be returned.
 
 <img src="doc/assets/load_first_page_state_flow.webp" alt="The Runner State Flow" width=735/>
 
 The `PageResult` contains all the items available in the fetched page as well as a `token` for loading the next one, whereas a `PageResultListItem` is a collection of all page results and their aggregated items.
 
 To load the next page, call `Paginator.loadNextPage()`. This uses the old given parameter arguments and page result to load the upcoming page. If the last page has been loaded (i.e. the last page result's token is `null`), then calling this method does nothing.
+
+Calling `loadNextPage()` without initially loading the first page will throw a `StateError`.
+
+> Use the `Paginator.currentPageIndex` to determine if the first page has been loaded. If it is equal to `-1`, then the first page has not been loaded yet.
 
 <img src="doc/assets/load_next_page_state_flow.webp" alt="The Runner State Flow" width=850/>
 
@@ -248,19 +252,22 @@ await paginateFruits.loadNextPage();
 
 // The last `Left` value returned when calling `loadFirstPage()` or
 // `loadNextPage()`
-print(paginator.leftValue);
+print(paginateFruits.leftValue);
 
 // The last `Right` value instance of `PageResult` returned when calling
 // `loadFirstPage()` or `loadNextPage()`
-print(paginator.rightValue);
+print(paginateFruits.rightValue);
 
 // The recent value returned when calling `loadFirstPage()` or
 // `loadNextPage()`. This may either be a `Left` object containing the
 // `leftValue` or a `Right` object containing the `rightValue`
-print(paginator.value);
+print(paginateFruits.value);
 
 /// Contains all the page results and an aggregate of all their items
-print(paginator.pageResultItemList);
+print(paginateFruits.pageResultItemList);
+
+// The index of the last page loaded
+print(paginateFruits.currentPageIndex);
 
 // To set all these values back to `null`, call `reset()`
 ```

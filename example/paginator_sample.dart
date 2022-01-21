@@ -103,6 +103,9 @@ void printPaginateResults(Paginator paginator) {
     'Page result item list: ${paginator.pageResultItemList}',
   );
 
+  // The index of the last page loaded
+  print('Current page index: ${paginator.currentPageIndex}');
+
   // To set all these values back to `null`, call `reset()`
 }
 
@@ -156,8 +159,10 @@ class Fruit {
 /// A special parameter for [PaginateFruits] containing all the available
 /// fruits to paginate and the number of fruits per page.
 class PaginateFruitsParams {
-  const PaginateFruitsParams(
-      {required this.fruits, required this.itemsPerPage});
+  const PaginateFruitsParams({
+    required this.fruits,
+    required this.itemsPerPage,
+  });
 
   final List<String> fruits;
   final int itemsPerPage;
