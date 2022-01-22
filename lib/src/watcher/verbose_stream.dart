@@ -22,6 +22,8 @@ class VerboseStream<LE, RE> {
   /// [LE] value.
   final LE Function(Object error, StackTrace? stackTrace) errorConverter;
 
+  /// Create a [stream] listener.
+  /// 
   /// Similar to [Stream.listen] with the added feature of converting the
   /// [onError] callback to have a type of `void Function(Left error)`.
   ///

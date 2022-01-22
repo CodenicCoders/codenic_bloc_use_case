@@ -147,15 +147,6 @@ class PaginateFruits extends Paginator<PaginateFruitsParams, Failure,
   }
 }
 
-class Fruit {
-  const Fruit(this.fruit);
-
-  final String fruit;
-
-  @override
-  String toString() => fruit;
-}
-
 /// A special parameter for [PaginateFruits] containing all the available
 /// fruits to paginate and the number of fruits per page.
 class PaginateFruitsParams {

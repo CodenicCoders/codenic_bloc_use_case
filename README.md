@@ -50,6 +50,8 @@ A simple use case that executes a specific action with the given parameter argum
 
 ### Creating a Runner
 
+For more info, see the [Runner](https://github.com/CodenicCoders/codenic_bloc_use_case/blob/master/lib/src/runner/runner.dart) docs.
+
 ```dart
 /// A runner that counts the quantity of each given fruit.
 class CountFruit extends Runner<CountFruitParams, Failure, CountFruitResult> {
@@ -139,7 +141,7 @@ A paginator has two available methods for loading pages.
 
 To start paginating, `Paginator.loadFirstPage()` must initially be called. This accepts some given parameter arguments for loading the first page. If the loading fails, then a `Left` value is returned. Otherwise, if the loading succeeds, a `Right` value instance of `PageResult` and a `PageResultListItem` will be returned.
 
-<img src="doc/assets/load_first_page_state_flow.webp" alt="The Runner State Flow" width=735/>
+<img src="doc/assets/load_first_page_state_flow.webp" alt="The Paginator State Flow for Loading the First Page" width=735/>
 
 The `PageResult` contains all the items available in the fetched page as well as a `token` for loading the next one, whereas a `PageResultListItem` is a collection of all page results and their aggregated items.
 
@@ -149,21 +151,22 @@ Calling `loadNextPage()` without initially loading the first page will throw a `
 
 > Use the `Paginator.currentPageIndex` to determine if the first page has been loaded. If it is equal to `-1`, then the first page has not been loaded yet.
 
-<img src="doc/assets/load_next_page_state_flow.webp" alt="The Runner State Flow" width=850/>
+<img src="doc/assets/load_next_page_state_flow.webp" alt="The Paginator State Flow for Loading the Next Page" width=850/>
 
 ### Creating a Paginator
 
-```dart
-/// A paginator that accepts a list of fruits then returns them in a paginated 
-/// manner.
-class PaginateFruits extends Paginator<PaginateFruitParams, Failure,
-    PageResult<Fruit>, Fruit> {
+For more info, see the [Paginator](https://github.com/CodenicCoders/codenic_bloc_use_case/blob/master/lib/src/runner/runner.dart) docs.
 
-  /// The callback executed when [loadFirstPage] or [loadNextPage] gets called
+```dart
+/// A paginator that accepts a list of fruits then returns them in a paginated manner.
+class PaginateFruits extends Paginator<PaginateFruitsParams, Failure,
+    PageResult<String>, String> {
+
+  /// The callback executed when [loadFirstPage] or [loadNextPage] gets called. Page loading occurs here.
   @override
-  Future<Either<Failure, PageResult<Fruit>>> onCall(
+  Future<Either<Failure, PageResult<String>>> onCall(
     PaginateFruitsParams params, [
-    PageResult<Fruit>? previousPageResult,
+    PageResult<String>? previousPageResult,
   ]) async {
     if (params.itemsPerPage < 1) {
       // When the items per page is less than 1, then a `Left` value is returned
@@ -178,7 +181,7 @@ class PaginateFruits extends Paginator<PaginateFruitParams, Failure,
         nextPageToken == null ? 0 : fruits.indexOf(nextPageToken as String) + 1;
 
     final newFruits =
-        fruits.skip(nextFruitStartIndex).take(itemsPerPage).map(Fruit.new);
+        fruits.skip(nextFruitStartIndex).take(itemsPerPage);
     
     final newPageToken = newFruits.isNotEmpty ? newFruits.last : null;
 
@@ -196,7 +199,7 @@ class PaginateFruitsParams {
   final int itemsPerPage;
 }
 
-/// The `Left` value for [PaginateFruit].
+/// The `Left` value for [PaginateFruits].
 class Failure {
   const Failure(this.message);
 
@@ -204,16 +207,6 @@ class Failure {
 
   @override
   String toString() => 'Failure: $message';
-}
-
-/// A data model returned by the `Right` [PageResult] of [PaginateFruit].
-class Fruit {
-  const Fruit(this.fruit);
-
-  final String fruit;
-
-  @override
-  String toString() => fruit;
 }
 ```
 
@@ -282,14 +275,175 @@ class PaginateFruitsResult extends PageResult<Fruit> {
 ## The Watcher Use Case
 A use case for watching a stream that emits a `Left` (error) or `Right` (data) event.
 
-Call the `Watcher.watch()` to start creating and listening to a stream. This returns a `Left` value when the stream initialization fails. When the stream setup suceeds, a `Right` value instance of `VerboseStream` will be provided which contains the stream being listened to.
+Call the `Watcher.watch()` to start creating and listening to a stream. This returns a `Left` value when the stream initialization fails. When the stream setup suceeds, a `Right` value instance of `VerboseStream` will be provided.
 
-<img src="doc/assets/watch_state_flow.webp" alt="The Runner State Flow" width=990/>
+A `VerboseStream` contains the stream being listened to and an error converter which converts the error received by the stream to the specified `Left` error event.
+
+<img src="doc/assets/watch_state_flow.webp" alt="The Watcher State Flow" width=990/>
 
 ### Creating a Watcher
 
+For more info, see the [Watcher](https://github.com/CodenicCoders/codenic_bloc_use_case/blob/master/lib/src/runner/runner.dart) docs.
 
+```dart
+/// A watcher for streaming fruits that goes inside the fruit basket.
+class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
+    VerboseStream<Failure, FruitBasket>, Failure, FruitBasket> {
+  StreamController<FruitBasket>? streamController;
+
+  int? basketCapacity;
+  List<String>? fruits;
+
+  @override
+  Future<Either<Failure, VerboseStream<Failure, FruitBasket>>> onCall(
+    WatchFruitBasketParams params,
+  ) async {
+    if (params.maxCapacity < 1) {
+      // When the basket capacity is less than 1, then a left value is returned
+      return const Left(Failure('Basket capacity must be greater than 0'));
+    }
+
+    basketCapacity = params.maxCapacity;
+    fruits = [];
+    await streamController?.close();
+
+    streamController = StreamController<FruitBasket>();
+
+    // Return a right value `VerboseStream` containing the stream that will be 
+    // listened to and its error converter
+    return Right(
+      VerboseStream(
+        stream: streamController!.stream,
+        errorConverter: (error, stackTrace) => Failure(error.toString()),
+      ),
+    );
+  }
+
+  void addFruits(List<String> newFruits) {
+    if (fruits == null || basketCapacity == null || streamController == null) {
+      return;
+    }
+
+    if (fruits!.length + newFruits.length <= basketCapacity!) {
+      fruits!.addAll(newFruits);
+      streamController!.add(FruitBasket(fruits!));
+    } else {
+      streamController!.addError(Exception('Fruit Basket is full'));
+    }
+  }
+
+  Future<void> closeStream() async => streamController?.close();
+
+  @override
+  Future<void> close() {
+    streamController?.close();
+    return super.close();
+  }
+}
+
+/// A special parameter for [WatchFruitBasket] for setting its max capacity.
+class WatchFruitBasketParams {
+  const WatchFruitBasketParams({required this.maxCapacity});
+
+  final int maxCapacity;
+}
+
+/// The `Left` value for [WatchFruitBasket].
+class Failure {
+  const Failure(this.message);
+
+  final String message;
+
+  @override
+  String toString() => 'Failure: $message';
+}
+
+/// The `Right` value for [WatchFruitBasket].
+class FruitBasket {
+  const FruitBasket(this.fruits);
+
+  final List<String> fruits;
+
+  @override
+  String toString() => 'FruitBasket: $fruits';
+}
+```
 
 ### Using a Watcher
 
+```dart
+Future<void> watcher() async {
+
+  // Initialize a `WatchFruitBasket` watcher instance
+  final watchFruitBasket = WatchFruitBasket();
+
+  // Start the stream
+  await watchFruitBasket.watch(
+    params: const WatchFruitBasketParams(maxCapacity: 4),
+  );
+
+  // Add fruits to emit a right event
+  watchFruitBasket.addFruits(['Apple', 'Orange', 'Mango']);
+
+  await Future<void>.delayed(Duration.zero);
+
+  // The last left value returned when calling `watch()`
+  print(watcher.leftValue);
+
+  // The last right value instance of `VerboseStream` returned when calling
+  // `watch()`
+  print(watcher.rightValue);
+
+  // The recent value returned when calling `watch()`. This may either be a 
+  // `Left` object containing the `leftValue` or a `Right` object containing 
+  // the `rightValue`
+  print(watcher.value);
+
+  // The last error event emitted by the stream created by calling 
+  // `watch()`
+  print(watcher.leftEvent);
+
+  // The last data event emitted by the stream created by calling 
+  // `watch()`
+  print(watcher.rightEvent);
+
+  // The recent value returned by the watch-created stream. This can either 
+  // reference the `leftEvent` or the `rightEvent`
+  print(watcher.event);
+
+  // To set all these values back to `null`, call `reset()`
+}
+```
+
 ### Creating a Custom Verbose Stream
+
+A custom `VerboseStream` if you want to add new properties or customize its 
+behavior.
+
+```dart
+class CustomVerboseStream extends VerboseStream<Failure, List<String>> {
+  CustomVerboseStream({
+    required this.streamController,
+    required Stream<List<String>> stream,
+    required Failure Function(Object, StackTrace?) errorConverter,
+  }) : super(
+          stream: stream,
+          errorConverter: errorConverter,
+        );
+
+  /// A custom property
+  final StreamController streamController;
+
+  @override
+  StreamSubscription<List<String>> listen(
+    void Function(List<String>) onData, {
+    void Function(Failure)? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    // Custom stream behavior
+    return stream.listen((event) {
+    });
+  }
+}
+```

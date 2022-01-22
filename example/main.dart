@@ -8,11 +8,12 @@ import 'package:bloc/bloc.dart';
 import 'package:codenic_bloc_use_case/codenic_bloc_use_case.dart';
 import 'package:codenic_bloc_use_case/src/base.dart';
 
+import 'src/failure.dart';
+import 'src/simple_bloc_observer.dart';
+
 part 'batch_runner_sample.dart';
-part 'failure.dart';
 part 'paginator_sample.dart';
 part 'runner_sample.dart';
-part 'simple_bloc_observer.dart';
 part 'watcher_sample.dart';
 
 /// To view the entire code example, see

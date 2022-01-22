@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 
-part of 'main.dart';
+import 'package:bloc/bloc.dart';
 
 class SimpleBlocObserver extends BlocObserver {
   @override
