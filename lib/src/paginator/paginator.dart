@@ -121,7 +121,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
 
     await ensureAsync();
 
-    final pageIndex = currentPageIndex + 1;
+    const pageIndex = _initialPageIndex + 1;
 
     if (distinctEmit(
           actionToken,
@@ -160,7 +160,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
 
   /// Loads the next page.
   ///
-  /// If the [loadFirstPage] has not been successfully called yet or the 
+  /// If the [loadFirstPage] has not been successfully called yet or the
   /// [currentPageIndex] is equal to `-1`, then this will throw a [StateError].
   ///
   /// This will initially emit a [PageLoading] state. If an error occurs

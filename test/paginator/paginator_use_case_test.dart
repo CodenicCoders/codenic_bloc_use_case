@@ -171,7 +171,7 @@ void main() {
                 0,
                 1,
               ),
-              const PageLoading(1, 2),
+              const PageLoading(0, 2),
               PageLoadSuccess<String>(
                 PageResultItemList(
                   UnmodifiableListView([
@@ -181,7 +181,7 @@ void main() {
                     ),
                   ]),
                 ),
-                1,
+                0,
                 2,
               ),
             ],
@@ -210,10 +210,10 @@ void main() {
                 0,
                 1,
               ),
-              const PageLoading(1, 2),
+              const PageLoading(0, 2),
               const PageLoadFailed(
                 'Page item count must be greater than 0',
-                1,
+                0,
                 2,
               ),
               const PageLoading(1, 3),

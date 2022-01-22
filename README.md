@@ -31,8 +31,16 @@ This section contains detailed information for the following topics:
   - [Using a Runner](#using-a-runner)
 - [The Paginator Use Case](#the-paginator-use-case)
   - [Creating a Paginator](#creating-a-paginator)
-  - [Creating a Custom Page Result](#creating-a-custom-page-result)
   - [Using a Paginator](#using-a-paginator)
+  - [Creating a Custom Page Result](#creating-a-custom-page-result)
+- [The Watcher Use Case](#the-watcher-use-case)
+  - [Creating a Watcher](#creating-a-watcher)
+  - [Using a Watcher](#using-a-watcher)
+  - [Creating a Custom Verbose Stream](#creating-a-custom-verbose-stream)
+- [The Batch Runner Use Case](#the-batch-runner-use-case)
+  - [Creating a Batch Runner](#creating-a-batch-runner)
+  - [Using a Batch Runner](#using-a-batch-runner)
+  - [Creating a Customer Use Case Factory]()
 
 ### The Runner Use Case
 
@@ -209,30 +217,6 @@ class Fruit {
 }
 ```
 
-### Creating a Custom Page Result
-
-If you want to have additional properties and behaviors in the `PageResult`, then consider extending it.
-
-> Since `PageResult` uses the `EquatableMixin` from the [equatable](https://pub.dev/packages/equatable) package, don't forget to add your custom properties in `props`.
-
-```dart
-class PaginateFruitsResult extends PageResult<Fruit> {
-  PaginateFruitsResult(this.remainingPages, Iterable<Fruit> items, dynamic nextPageToken)
-      : super(items, nextPageToken);
-
-  /// A custom property
-  final int remainingPages;
-
-  /// Add custom properties in props.
-  @override
-  List<Object?> get props => super.props..addAll([remainingPages]);
-
-  @override
-  String toString() => items.toString();
-}
-```
-
-
 ### Using a Paginator
 
 ```dart
@@ -271,3 +255,41 @@ print(paginateFruits.currentPageIndex);
 
 // To set all these values back to `null`, call `reset()`
 ```
+
+### Creating a Custom Page Result
+
+If you want to have additional properties and behaviors in the `PageResult`, then consider extending it.
+
+> Since `PageResult` uses the `EquatableMixin` from the [equatable](https://pub.dev/packages/equatable) package, don't forget to add your custom properties in `props`.
+
+```dart
+class PaginateFruitsResult extends PageResult<Fruit> {
+  PaginateFruitsResult(this.remainingPages, Iterable<Fruit> items, dynamic nextPageToken)
+      : super(items, nextPageToken);
+
+  /// A custom property
+  final int remainingPages;
+
+  /// Add custom properties in props.
+  @override
+  List<Object?> get props => super.props..addAll([remainingPages]);
+
+  @override
+  String toString() => items.toString();
+}
+```
+
+## The Watcher Use Case
+A use case for watching a stream that emits a `Left` (error) or `Right` (data) event.
+
+Call the `Watcher.watch()` to start creating and listening to a stream. This returns a `Left` value when the stream initialization fails. When the stream setup suceeds, a `Right` value instance of `VerboseStream` will be provided which contains the stream being listened to.
+
+<img src="doc/assets/watch_state_flow.webp" alt="The Runner State Flow" width=990/>
+
+### Creating a Watcher
+
+
+
+### Using a Watcher
+
+### Creating a Custom Verbose Stream
