@@ -16,7 +16,7 @@ part 'watcher_state.dart';
 ///
 /// The stream is created from the obtained [R] [VerboseStream] when [watch] is
 /// executed successfully. [L] is the error returned when stream creation fails.
-/// 
+///
 /// The created stream emits either an [LE] error event or an [RE] data event.
 ///
 /// A custom [R] [VerboseStream] can be provided. If none, then set this to

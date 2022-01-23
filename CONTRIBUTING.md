@@ -24,7 +24,7 @@ Before creating a pull request please:
 6. If you've changed the public API, make sure to update/add documentation.
 7. Format your code (`dart format .`).
 8. Analyze your code (`dart analyze --fatal-infos --fatal-warnings .`).
-9. Verify you code for perfect Pub score (`pana .`).
+9. Verify you code for perfect Pub score (`pana . --no-warning`).
    - See <https://pub.dev/packages/pana>
 10. Create the Pull Request.
 11. Verify that all status checks are passing.

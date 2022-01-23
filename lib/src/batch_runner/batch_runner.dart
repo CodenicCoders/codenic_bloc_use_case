@@ -33,8 +33,8 @@ part 'use_case_factory.dart';
 /// {@endtemplate}
 class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
   /// {@macro BatchRunner}
-  /// 
-  /// The first dimension of the [useCaseFactories] defines the use case batch, 
+  ///
+  /// The first dimension of the [useCaseFactories] defines the use case batch,
   /// whereas the second dimension is the list of all its use cases it manages.
   BatchRunner({
     required this.useCaseConstructorParams,
@@ -52,7 +52,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
   /// The parameter used to initialize the use case of [useCaseFactories].
   final SP1 useCaseConstructorParams;
 
-  /// A 2-Dimensional list of use case factories for creating and executing the 
+  /// A 2-Dimensional list of use case factories for creating and executing the
   /// use cases by batch.
   ///
   /// The first dimension defines the use case batch, whereas the second

@@ -45,15 +45,15 @@ Future<void> runner() async {
 
 void printRunResults(Runner runner) {
   print('');
-  
+
   // The last left value returned when calling `run()`
   print('Last left value: ${runner.leftValue}');
 
   // The last right value returned when calling `run()`
   print('Last right value: ${runner.rightValue}');
 
-  // The recent value returned when calling `run()`. This may either be a 
-  // `Left` object containing the `leftValue` or a `Right` object containing 
+  // The recent value returned when calling `run()`. This may either be a
+  // `Left` object containing the `leftValue` or a `Right` object containing
   // the `rightValue`
   print('Current value: ${runner.value}');
 
