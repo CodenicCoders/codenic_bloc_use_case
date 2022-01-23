@@ -51,26 +51,26 @@ void main() {
           useCaseFactories: UnmodifiableListView([
             UnmodifiableListView([
               UseCaseFactory<String, int, void, int, TestDivideInteger>(
-                useCaseFactory: (void constructorParams) =>
+                onInitialize: (void constructorParams) =>
                     testDivideIntegerByOne,
                 onCall: (params, useCase) => useCase.call(params),
               ),
               UseCaseFactory<String, int, void, int, TestDivideInteger>(
-                useCaseFactory: (void constructorParams) =>
+                onInitialize: (void constructorParams) =>
                     testDivideIntegerByTwo,
                 onCall: (params, useCase) => useCase.call(params),
               ),
             ]),
             UnmodifiableListView([
               UseCaseFactory<String, int, void, int, TestDivideInteger>(
-                useCaseFactory: (void constructorParams) =>
+                onInitialize: (void constructorParams) =>
                     testDivideIntegerByThree,
                 onCall: (params, useCase) => useCase.call(params),
               ),
             ]),
             UnmodifiableListView([
               UseCaseFactory<String, int, void, int, TestDivideInteger>(
-                useCaseFactory: (void constructorParams) =>
+                onInitialize: (void constructorParams) =>
                     testDivideIntegerByFive,
                 onCall: (params, useCase) => useCase.call(params),
               ),
@@ -132,7 +132,7 @@ void main() {
             act: (batchRunner) => batchRunner.batchRun(params: 30),
             expect: () => [
               const BatchRunning(1),
-              BatchRunCompleted(
+              BatchRunSuccess(
                 BatchRunResult<String, int>(
                   UnmodifiableListView([
                     testDivideIntegerByOne,
@@ -170,7 +170,7 @@ void main() {
             },
             expect: () => [
               const BatchRunning(2),
-              BatchRunCompleted(
+              BatchRunSuccess(
                 BatchRunResult<void, void>(UnmodifiableListView([])),
                 2,
               ),
@@ -189,7 +189,7 @@ void main() {
             expect: () => [
               const BatchRunning(1),
               const BatchRunning(2),
-              BatchRunCompleted(
+              BatchRunSuccess(
                 BatchRunResult<String, int>(
                   UnmodifiableListView([
                     testDivideIntegerByOne,
@@ -237,7 +237,7 @@ void main() {
             },
             expect: () => [
               const BatchRunning(1),
-              BatchRunCompleted(
+              BatchRunSuccess(
                 BatchRunResult<String, int>(
                   UnmodifiableListView([
                     testDivideIntegerByOne,

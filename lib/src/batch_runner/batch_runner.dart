@@ -23,16 +23,19 @@ part 'use_case_factory.dart';
 /// [L] refers to the expected left value type of the associated use cases.
 ///
 /// [R] refers to the expected right value type of the associated use cases.
-
+///
 /// [SP1] is the parameter passed to the [UseCaseFactory.call] callback to
 /// create or return an existing use case.
 ///
-/// [SP2] is the paramater passed to the [onCall] callback for executing the
-/// `call` method of the use cases.
+/// [SP2] is the parameter passed to the [onCall] callback for executing the
+/// `call` method of each use case.
 ///
 /// {@endtemplate}
 class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
   /// {@macro BatchRunner}
+  /// 
+  /// The first dimension of the [useCaseFactories] defines the use case batch, 
+  /// whereas the second dimension is the list of all its use cases it manages.
   BatchRunner({
     required this.useCaseConstructorParams,
     required Iterable<
@@ -49,8 +52,11 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
   /// The parameter used to initialize the use case of [useCaseFactories].
   final SP1 useCaseConstructorParams;
 
-  /// A 2-D list of use case factories for creating and executing the use cases
-  /// by batch.
+  /// A 2-Dimensional list of use case factories for creating and executing the 
+  /// use cases by batch.
+  ///
+  /// The first dimension defines the use case batch, whereas the second
+  /// dimension is the list of all its use cases.
   final UnmodifiableListView<
           UnmodifiableListView<
               UseCaseFactory<L, R, SP1, SP2, BaseUseCase<dynamic, L, R>>>>
@@ -101,7 +107,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
   /// use cases that have succeeded will no longer be executed.
   ///
   /// This will initially emit a [BatchRunning] state followed either by a
-  /// [BatchRunFailed] or [BatchRunCompleted].
+  /// [BatchRunFailed] or [BatchRunSuccess].
   Future<void> batchRun({required SP2 params}) async {
     final actionToken = requestNewActionToken();
 
@@ -117,7 +123,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
       actionToken,
       () => result.fold(
         (l) => BatchRunFailed(_batchRunResult = l, actionToken),
-        (r) => BatchRunCompleted(_batchRunResult = r, actionToken),
+        (r) => BatchRunSuccess(_batchRunResult = r, actionToken),
       ),
     );
   }

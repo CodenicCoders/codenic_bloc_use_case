@@ -63,9 +63,9 @@ class BatchRunFailed<L, R> extends BatchRunnerState {
 /// The state emitted when a [BatchRunner.batchRun] call succeeds.
 ///
 /// {@endtemplate}
-class BatchRunCompleted<L, R> extends BatchRunnerState {
+class BatchRunSuccess<L, R> extends BatchRunnerState {
   /// {@macro BatchRunCompleted}
-  BatchRunCompleted(this.rightValue, int batchRunToken) : super(batchRunToken);
+  BatchRunSuccess(this.rightValue, int batchRunToken) : super(batchRunToken);
 
   /// {@macro rightValue}
   final BatchRunResult<L, R> rightValue;

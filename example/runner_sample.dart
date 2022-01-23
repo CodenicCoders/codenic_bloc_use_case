@@ -45,6 +45,7 @@ Future<void> runner() async {
 
 void printRunResults(Runner runner) {
   print('');
+  
   // The last left value returned when calling `run()`
   print('Last left value: ${runner.leftValue}');
 

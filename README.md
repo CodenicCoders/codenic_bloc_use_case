@@ -40,7 +40,7 @@ This section contains detailed information for the following topics:
 - [The Batch Runner Use Case](#the-batch-runner-use-case)
   - [Creating a Batch Runner](#creating-a-batch-runner)
   - [Using a Batch Runner](#using-a-batch-runner)
-  - [Creating a Customer Use Case Factory]()
+  - [Creating a Custom Use Case Factory](#creating-a-custom-use-case-factory)
 
 ### The Runner Use Case
 
@@ -294,6 +294,8 @@ class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
   int? basketCapacity;
   List<String>? fruits;
 
+  /// The callback triggered when [watch] is called. Use this to create a 
+  /// [VerboseStream] containing the target stream.
   @override
   Future<Either<Failure, VerboseStream<Failure, FruitBasket>>> onCall(
     WatchFruitBasketParams params,
@@ -319,6 +321,7 @@ class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
     );
   }
 
+
   void addFruits(List<String> newFruits) {
     if (fruits == null || basketCapacity == null || streamController == null) {
       return;
@@ -326,8 +329,10 @@ class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
 
     if (fruits!.length + newFruits.length <= basketCapacity!) {
       fruits!.addAll(newFruits);
+      // Emit a right data event.
       streamController!.add(FruitBasket(fruits!));
     } else {
+      // Emit a left data event.
       streamController!.addError(Exception('Fruit Basket is full'));
     }
   }
@@ -417,8 +422,8 @@ Future<void> watcher() async {
 
 ### Creating a Custom Verbose Stream
 
-A custom `VerboseStream` if you want to add new properties or customize its 
-behavior.
+A custom `VerboseStream` can be created if you want to add new properties or 
+customize its behavior.
 
 ```dart
 class CustomVerboseStream extends VerboseStream<Failure, List<String>> {
@@ -444,6 +449,237 @@ class CustomVerboseStream extends VerboseStream<Failure, List<String>> {
     // Custom stream behavior
     return stream.listen((event) {
     });
+  }
+}
+```
+
+## The Batch Runner Use Case
+
+The batch runner allows you to run multiple use cases at the same time or by batch.
+
+First, a `BatchRunner` must be given a list of `UseCaseFactory` responsible for 
+creating and calling a specific `UseCase`, and a constructor parameter fed to the use case factories for constructing the use cases.
+
+To start the batch run, call `BatchRunner.batchRun`. All use case factories on 
+the first batch will be triggered with the given parameter arguments. If all of them are successful, then the next 
+batch will push through followed by the next. If any of the use case fails, 
+then the batch run will halt.
+
+Call the `BatchRunner.batchRun` again to continue the batch run. By default, 
+all previous successfully executed use cases will not be triggered. This behavior can be 
+altered by creating a custom `UseCaseFactory`.
+
+Every batch run call, regardless whether it succeeds or fails, returns a 
+`BatchRunResult` containing all the failed `leftUseCases` and successful 
+`rightUseCases`.
+
+> A `Runner`, `Paginator`, and `Watcher` can be placed in a `BatchRunner`.
+
+<img src="doc/assets/batch_run_state_flow.webp" alt="The Batch Runner State Flow" width=1056/>
+
+### Creating A Batch Runner
+
+```dart
+/// Fetches a meal by creating and executing the [FetchFruits] and
+/// [FetchVeggies] use cases in the first batch, followed by [FetchGrains] in
+/// the second batch.
+class BatchFetchMeal extends BatchRunner<Failure, dynamic,
+    BatchFetchMealConstructorParams, BatchFetchMealCallParams> {
+  BatchFetchMeal({
+    required BatchFetchMealConstructorParams constructorParams,
+  }) : super(
+          useCaseConstructorParams: constructorParams,
+          useCaseFactories: [
+            // The first batch of use cases
+            [
+              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+                  BatchFetchMealCallParams, FetchFruits>(
+                useCaseFactory: (constructorParams) =>
+                    FetchFruits(fruits: constructorParams.availableFruits),
+                onCall: (callParams, useCase) =>
+                    useCase.call(callParams.fruitCount),
+              ),
+              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+                  BatchFetchMealCallParams, FetchVeggies>(
+                useCaseFactory: (constructorParams) =>
+                    FetchVeggies(veggies: constructorParams.availableVeggies),
+                onCall: (callParams, useCase) =>
+                    useCase.call(callParams.veggieCount),
+              )
+            ],
+            // The second batch of use cases
+            [
+              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+                  BatchFetchMealCallParams, FetchGrains>(
+                useCaseFactory: (constructorParams) =>
+                    FetchGrains(grains: constructorParams.availableGrains),
+                onCall: (callParams, useCase) =>
+                    useCase.call(callParams.grainCount),
+              )
+            ]
+          ],
+        );
+}
+
+/// The parameter passed to each [UseCaseFactory] to initialize a use case.
+class BatchFetchMealConstructorParams {
+  const BatchFetchMealConstructorParams({
+    required this.availableFruits,
+    required this.availableVeggies,
+    required this.availableGrains,
+  });
+
+  final List<String> availableFruits;
+  final List<String> availableVeggies;
+  final List<String> availableGrains;
+}
+
+/// The parameter passed to each [UseCaseFactory] to call a use case.
+class BatchFetchMealCallParams {
+  const BatchFetchMealCallParams({
+    required this.fruitCount,
+    required this.veggieCount,
+    required this.grainCount,
+  });
+
+  final int fruitCount;
+  final int veggieCount;
+  final int grainCount;
+}
+
+class FetchFruits extends BaseUseCase<int, Failure, List<String>> {
+  FetchFruits({required this.fruits});
+
+  final List<String> fruits;
+
+  @override
+  Future<Either<Failure, List<String>>> onCall(int params) async {
+    if (params < 1) {
+      return const Left(
+        Failure('Number of fruits to be fetched must be greater than 0'),
+      );
+    }
+
+    return Right(fruits.take(params).toList());
+  }
+}
+
+class FetchVeggies extends BaseUseCase<int, Failure, List<String>> {
+  FetchVeggies({required this.veggies});
+
+  final List<String> veggies;
+
+  @override
+  Future<Either<Failure, List<String>>> onCall(int params) async {
+    if (params < 1) {
+      return const Left(
+        Failure('Number of veggies to be fetched must be greater than 0'),
+      );
+    }
+
+    return Right(veggies.take(params).toList());
+  }
+}
+
+class FetchGrains extends BaseUseCase<int, Failure, List<String>> {
+  FetchGrains({required this.grains});
+
+  final List<String> grains;
+
+  @override
+  Future<Either<Failure, List<String>>> onCall(int params) async {
+    if (params < 1) {
+      return const Left(
+        Failure('Number of grains to be fetched must be greater than 0'),
+      );
+    }
+
+    return Right(grains.take(params).toList());
+  }
+}
+```
+
+### Using a Batch Runner
+```dart
+// Initialize the batch runner use case
+final batchFetchMeal = BatchFetchMeal(
+  constructorParams: const BatchFetchMealConstructorParams(
+    availableFruits: ['Apple, Orange, Mango, Lemon'],
+    availableVeggies: ['Kale', 'Garlic', 'Cabbage', 'Broccoli'],
+    availableGrains: ['Barley', 'Brown Rice', 'Oatmeal', 'Millet'],
+  ),
+);
+
+// Start the batch run
+await batchFetchMeal.batchRun(
+  params: const BatchFetchMealCallParams(
+    fruitCount: 2,
+    veggieCount: 4,
+    grainCount: 3,
+  ),
+);
+
+// View the results
+
+final batchRunResult = batchRunner.batchRunResult;
+
+// All use cases created and called in the batch run
+print(batchRunResult?.useCases);
+// The left values by all left (failed) use cases
+print(batchRunResult?.leftValues());
+// The right values by all right (successful) use cases
+print(batchRunResult?.rightValues());
+
+// Reference each use cases. If `call()` returns `null`, then that use case
+// may have not been created yet by the `UseCaseFactory`
+final fetchFruits = batchRunResult?.call<FetchFruits>();
+final fetchVeggies = batchRunResult?.call<FetchVeggies>();
+final fetchGrains = batchRunResult?.call<FetchGrains>();
+
+print(fetchFruits?.leftValue);
+print(fetchFruits?.rightValue);
+print(fetchFruits?.value);
+
+print(fetchVeggies?.leftValue);
+print(fetchVeggies?.rightValue);
+print(fetchVeggies?.value);
+
+print(fetchGrains?.leftValue);
+print(fetchGrains?.rightValue);
+print(fetchGrains?.value);
+```
+
+## Creating a Custom Use Case Factory
+
+By default, the `UseCaseFactory` does the following:
+- Creates a use case only if it has not been created yet.
+- Executes the use case only if it previously failed or has not been executed yet.
+
+To customize this behavior, consider creating a child class of `UseCaseFactory`.
+
+```dart
+class CustomUseCastFactory<L, R, SP1, SP2,
+        UC extends BaseUseCase<dynamic, L, R>>
+    extends UseCaseFactory<L, R, SP1, SP2, UC> {
+  CustomUseCastFactory({
+    required UC Function(SP1 constructorParams) onInitialize,
+    required Future<Either<L, R>> Function(SP2 callParams, UC useCase) onCall,
+  }) : super(onInitialize: onInitialize, onCall: onCall);
+
+  Future<Either<L, R>> call(SP1 constructorParams, SP2 callParams) async {
+    // Create the logic for initializing and calling the use case
+    if (useCase == null) {
+      useCase = onInitialize(constructorParams);
+      return onCall(callParams, useCase!);
+    }
+
+    final currentValue = useCase!.value;
+
+    if (currentValue == null || currentValue.isLeft()) {
+      return onCall(callParams, useCase!);
+    }
+
+    return currentValue;
   }
 }
 ```
