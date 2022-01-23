@@ -8,7 +8,7 @@ part of 'batch_runner.dart';
 /// This creates a [UC] use case that emits a [L] left value and [R] right
 /// value.
 ///
-/// [SP1] is the parameter passed to the [useCaseFactory] callback to create or
+/// [SP1] is the parameter passed to the [onInitialize] callback to create or
 /// return an existing [UC] use case.
 ///
 /// [SP2] is the paramater passed to the [onCall] callback for executing the
@@ -18,12 +18,12 @@ part of 'batch_runner.dart';
 class UseCaseFactory<L, R, SP1, SP2, UC extends BaseUseCase<dynamic, L, R>> {
   /// {@UseCaseFactory}
   UseCaseFactory({
-    required this.useCaseFactory,
+    required this.onInitialize,
     required this.onCall,
   });
 
-  /// The callback for creating or returning a [T] [BaseUseCase].
-  final UC Function(SP1 constructorParams) useCaseFactory;
+  /// The callback for creating or returning a [UC] [BaseUseCase].
+  final UC Function(SP1 constructorParams) onInitialize;
 
   /// The callback triggered when [call] is executed.
   ///
@@ -32,13 +32,16 @@ class UseCaseFactory<L, R, SP1, SP2, UC extends BaseUseCase<dynamic, L, R>> {
 
   /// {@template useCase}
   ///
-  /// The use case created by the [useCaseFactory].
+  /// The use case created by the [onInitialize].
   ///
   /// {@endtemplate}
   UC? _useCase;
 
   /// {@macro useCase}
   UC? get useCase => _useCase;
+
+  @protected
+  set useCase(UC? useCase) => _useCase = useCase;
 
   /// Creates the use case if not yet created then calls its [BaseUseCase.call]
   /// method. Afterwards, it's response will be returned.
@@ -47,7 +50,7 @@ class UseCaseFactory<L, R, SP1, SP2, UC extends BaseUseCase<dynamic, L, R>> {
   /// be invoked and its [BaseUseCase.value] will be returned instead.
   Future<Either<L, R>> call(SP1 constructorParams, SP2 callParams) async {
     if (useCase == null) {
-      _useCase = useCaseFactory(constructorParams);
+      useCase = onInitialize(constructorParams);
       return onCall(callParams, _useCase!);
     }
 

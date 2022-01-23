@@ -1,5 +1,3 @@
-part of 'main.dart';
-
 class Failure {
   const Failure(this.message);
 

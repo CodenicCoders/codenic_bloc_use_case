@@ -14,13 +14,17 @@ part 'watcher_state.dart';
 /// An abstract use case for running a stream asynchronously via a cubit which
 /// accepts a [P] parameter for creating the stream.
 ///
-/// [L] is the error returned when stream creation fails.
+/// The stream is created from the obtained [R] [VerboseStream] when [watch] is
+/// executed successfully. [L] is the error returned when stream creation fails.
 ///
 /// The created stream emits either an [LE] error event or an [RE] data event.
 ///
+/// A custom [R] [VerboseStream] can be provided. If none, then set this to
+/// `VerboseStream<LE, RE>`.
+///
 /// {@endtemplate}
-abstract class Watcher<P, L, LE, RE> extends DistinctCubit<WatcherState>
-    with BaseUseCase<P, L, VerboseStream<LE, RE>> {
+abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
+    extends DistinctCubit<WatcherState> with BaseUseCase<P, L, R> {
   /// {@macro Watcher}
   Watcher() : super(const WatcherInitial(DistinctCubit.initialActionToken));
 
@@ -33,7 +37,7 @@ abstract class Watcher<P, L, LE, RE> extends DistinctCubit<WatcherState>
   ///
   /// If [watch] has not been called even once, then this is `null`.
   @override
-  Either<L, VerboseStream<LE, RE>>? get value => super.value;
+  Either<L, R>? get value => super.value;
 
   /// {@template leftValue}
   ///
@@ -54,7 +58,7 @@ abstract class Watcher<P, L, LE, RE> extends DistinctCubit<WatcherState>
   ///
   /// {@endtemplate}
   @override
-  VerboseStream<LE, RE>? get rightValue => super.rightValue;
+  R? get rightValue => super.rightValue;
 
   /// {@template event}
   ///
@@ -163,7 +167,7 @@ abstract class Watcher<P, L, LE, RE> extends DistinctCubit<WatcherState>
             cancelOnError: cancelOnError,
           );
 
-          return StartWatchSuccess(actionToken);
+          return StartWatchSuccess(r, actionToken);
         },
       );
     });

@@ -21,7 +21,7 @@ void main() {
               // Given
               final useCaseFactory =
                   UseCaseFactory<void, void, void, bool, TestUseCase>(
-                useCaseFactory: (_) => TestUseCase(),
+                onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );
 
@@ -43,7 +43,7 @@ void main() {
               // Given
               final useCaseFactory =
                   UseCaseFactory<void, void, void, bool, TestUseCase>(
-                useCaseFactory: (_) => TestUseCase(),
+                onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );
 
@@ -65,7 +65,7 @@ void main() {
               // Given
               final useCaseFactory =
                   UseCaseFactory<void, void, void, bool, TestUseCase>(
-                useCaseFactory: (_) => TestUseCase(),
+                onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );
 
@@ -87,7 +87,7 @@ void main() {
               // Given
               final useCaseFactory =
                   UseCaseFactory<void, void, void, bool, TestUseCase>(
-                useCaseFactory: (_) => TestUseCase(),
+                onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );
 

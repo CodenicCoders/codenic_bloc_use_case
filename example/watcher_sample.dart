@@ -73,20 +73,40 @@ Future<void> watcher() async {
 
 void printWatchResults(Watcher watcher) {
   print('');
+
+  // The last left value returned when calling `watch()`
   print('Last left value: ${watcher.leftValue}');
+
+  // The last right value instance of `VerboseStream` returned when calling
+  // `watch()`
   print('Last right value: ${watcher.rightValue}');
+
+  // The recent value returned when calling `watch()`. This may either be a
+  // `Left` object containing the `leftValue` or a `Right` object containing
+  // the `rightValue`
   print('Current value: ${watcher.value}');
   print('');
+
+  // The last error event emitted by the stream created by calling
+  // `watch()`
   print('Last left event: ${watcher.leftEvent}');
+
+  // The last data event emitted by the stream created by calling
+  // `watch()`
   print('Last right event: ${watcher.rightEvent}');
+
+  // The recent value returned by the watch-created stream. This can either
+  // reference the `leftEvent` or the `rightEvent`.
   print('Current event: ${watcher.event}');
+
+  // To set all these values back to `null`, call `reset()`
 }
 
-/// A sample watcher use case for streaming the fruits that goes inside the
-/// fruit basket.
-class WatchFruitBasket
-    extends Watcher<WatchFruitBasketParams, Failure, Failure, FruitBasket> {
+/// A watcher for streaming fruits that goes inside the fruit basket.
+class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
+    VerboseStream<Failure, FruitBasket>, Failure, FruitBasket> {
   StreamController<FruitBasket>? streamController;
+
   int? basketCapacity;
   List<String>? fruits;
 
@@ -94,7 +114,8 @@ class WatchFruitBasket
   Future<Either<Failure, VerboseStream<Failure, FruitBasket>>> onCall(
     WatchFruitBasketParams params,
   ) async {
-    if (params.maxCapacity < 0) {
+    if (params.maxCapacity < 1) {
+      // When the basket capacity is less than 1, then a left value is returned
       return const Left(Failure('Basket capacity must be greater than 0'));
     }
 
@@ -104,6 +125,8 @@ class WatchFruitBasket
 
     streamController = StreamController<FruitBasket>();
 
+    // Return a right value `VerboseStream` containing the stream that will be
+    // listened to and its error converter
     return Right(
       VerboseStream(
         stream: streamController!.stream,
@@ -112,7 +135,6 @@ class WatchFruitBasket
     );
   }
 
-  /// A test method for adding fruits in the basket.
   void addFruits(List<String> newFruits) {
     if (fruits == null || basketCapacity == null || streamController == null) {
       return;

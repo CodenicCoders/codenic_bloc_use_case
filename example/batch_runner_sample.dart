@@ -88,12 +88,24 @@ Future<void> batchRunner() async {
 void printBatchRunResults(BatchRunner batchRunner) {
   final batchRunResult = batchRunner.batchRunResult;
 
+  print('');
+  // All use cases created and called in the batch run
+  print('$BatchFetchMeal batch run use cases: ${batchRunResult?.useCases}');
+  // The left values by all left (failed) use cases
+  print(
+    '$BatchFetchMeal batch run left values: ${batchRunResult?.leftValues()}',
+  );
+  // The right values by all right (successful) use cases
+  print(
+    '$BatchFetchMeal batch run right values: ${batchRunResult?.rightValues()}',
+  );
+
+  // Reference each use cases. If `call()` returns `null`, then that use case
+  // may have not been created yet by the `UseCaseFactory`
   final fetchFruits = batchRunResult?.call<FetchFruits>();
   final fetchVeggies = batchRunResult?.call<FetchVeggies>();
   final fetchGrains = batchRunResult?.call<FetchGrains>();
 
-  print('');
-  print('$BatchFetchMeal batch run result: ${batchRunResult?.useCases}');
   print('');
   print('$FetchFruits last left value: ${fetchFruits?.leftValue}');
   print('$FetchFruits last right value: ${fetchFruits?.rightValue}');
@@ -108,9 +120,9 @@ void printBatchRunResults(BatchRunner batchRunner) {
   print('$FetchGrains current value: ${fetchGrains?.value}');
 }
 
-/// Batch fetches a meal by creating and executing the [FetchFruits] and
-/// [FetchVeggies] use cases in the first batch, and [FetchGrains] in the
-/// second batch.
+/// Fetches a meal by creating and executing the [FetchFruits] and
+/// [FetchVeggies] use cases in the first batch, followed by [FetchGrains] in
+/// the second batch.
 class BatchFetchMeal extends BatchRunner<Failure, dynamic,
     BatchFetchMealConstructorParams, BatchFetchMealCallParams> {
   BatchFetchMeal({
@@ -118,38 +130,28 @@ class BatchFetchMeal extends BatchRunner<Failure, dynamic,
   }) : super(
           useCaseConstructorParams: constructorParams,
           useCaseFactories: [
+            // The first batch of use cases
             [
-              UseCaseFactory<
-                  Failure,
-                  List<String>,
-                  BatchFetchMealConstructorParams,
-                  BatchFetchMealCallParams,
-                  FetchFruits>(
-                useCaseFactory: (constructorParams) =>
+              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+                  BatchFetchMealCallParams, FetchFruits>(
+                onInitialize: (constructorParams) =>
                     FetchFruits(fruits: constructorParams.availableFruits),
                 onCall: (callParams, useCase) =>
                     useCase.call(callParams.fruitCount),
               ),
-              UseCaseFactory<
-                  Failure,
-                  List<String>,
-                  BatchFetchMealConstructorParams,
-                  BatchFetchMealCallParams,
-                  FetchVeggies>(
-                useCaseFactory: (constructorParams) =>
+              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+                  BatchFetchMealCallParams, FetchVeggies>(
+                onInitialize: (constructorParams) =>
                     FetchVeggies(veggies: constructorParams.availableVeggies),
                 onCall: (callParams, useCase) =>
                     useCase.call(callParams.veggieCount),
               )
             ],
+            // The second batch of use cases
             [
-              UseCaseFactory<
-                  Failure,
-                  List<String>,
-                  BatchFetchMealConstructorParams,
-                  BatchFetchMealCallParams,
-                  FetchGrains>(
-                useCaseFactory: (constructorParams) =>
+              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+                  BatchFetchMealCallParams, FetchGrains>(
+                onInitialize: (constructorParams) =>
                     FetchGrains(grains: constructorParams.availableGrains),
                 onCall: (callParams, useCase) =>
                     useCase.call(callParams.grainCount),
@@ -159,6 +161,7 @@ class BatchFetchMeal extends BatchRunner<Failure, dynamic,
         );
 }
 
+/// The parameter passed to each [UseCaseFactory] to initialize a use case.
 class BatchFetchMealConstructorParams {
   const BatchFetchMealConstructorParams({
     required this.availableFruits,
@@ -171,6 +174,7 @@ class BatchFetchMealConstructorParams {
   final List<String> availableGrains;
 }
 
+/// The parameter passed to each [UseCaseFactory] to call a use case.
 class BatchFetchMealCallParams {
   const BatchFetchMealCallParams({
     required this.fruitCount,

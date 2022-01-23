@@ -8,33 +8,35 @@ Future<void> runner() async {
   print('\n** INITIALIZE RUNNER **');
 
   // Initialize the runner use case
-  final fetchFruitCount = FetchFruitCount();
+  final countFruit = CountFruit();
 
-  printRunResults(fetchFruitCount);
+  printRunResults(countFruit);
 
   print('\n** FAILED RUN **');
 
   // Execute the runner with an expected failed result
-  await fetchFruitCount.run(params: 'Strawberry');
+  await countFruit.run(params: const CountFruitParams([]));
 
   // View the results
-  printRunResults(fetchFruitCount);
+  printRunResults(countFruit);
 
   print('\n** SUCCESSFUL RUN **');
 
   // Execute the runner with an expected successful result
-  await fetchFruitCount.run(params: 'Apple');
+  await countFruit.run(
+    params: const CountFruitParams(['Apple', 'Orange', 'Apple']),
+  );
 
   // View the results
-  printRunResults(fetchFruitCount);
+  printRunResults(countFruit);
 
   print('\n** RESET RUNNER **');
 
   // Reset the runner use case to its initial state
-  await fetchFruitCount.reset();
+  await countFruit.reset();
 
   // View the results
-  printRunResults(fetchFruitCount);
+  printRunResults(countFruit);
 
   print(
     '\n******************** RUNNER USE CASE SAMPLE END ********************//',
@@ -43,30 +45,58 @@ Future<void> runner() async {
 
 void printRunResults(Runner runner) {
   print('');
+
+  // The last left value returned when calling `run()`
   print('Last left value: ${runner.leftValue}');
+
+  // The last right value returned when calling `run()`
   print('Last right value: ${runner.rightValue}');
+
+  // The recent value returned when calling `run()`. This may either be a
+  // `Left` object containing the `leftValue` or a `Right` object containing
+  // the `rightValue`
   print('Current value: ${runner.value}');
+
+  // To set all these values back to `null`, call `reset()`
 }
 
-/// A sample runner use case for fetching the number of a specific fruit in a
-/// fruit basket.
-class FetchFruitCount extends Runner<String, Failure, int> {
-  final fruitBasket = ['Apple', 'Orange', 'Mange', 'Apple'];
+/// A runner that counts the quantity of each given fruit.
+class CountFruit extends Runner<CountFruitParams, Failure, CountFruitResult> {
+  @override
+  Future<Either<Failure, CountFruitResult>> onCall(
+    CountFruitParams params,
+  ) async {
+    if (params.fruits.isEmpty) {
+      // When the given fruits is empty, then a left value is returned
+      return const Left(Failure('There are no fruits to count'));
+    }
+
+    final fruitCount = <String, int>{};
+
+    for (final fruit in params.fruits) {
+      fruitCount[fruit] = (fruitCount[fruit] ?? 0) + 1;
+    }
+
+    // Returns a right value containing the fruit count
+    final result = CountFruitResult(fruitCount);
+    return Right(result);
+  }
+}
+
+/// A special parameter for [CountFruit] containing all the available fruits '
+/// 'to count.
+class CountFruitParams {
+  const CountFruitParams(this.fruits);
+
+  final List<String> fruits;
+}
+
+/// The right value for [CountFruit] containing the count for each fruit.
+class CountFruitResult {
+  const CountFruitResult(this.fruitCount);
+
+  final Map<String, int> fruitCount;
 
   @override
-  Future<Either<Failure, int>> onCall(String params) async {
-    var i = 0;
-
-    for (final fruit in fruitBasket) {
-      if (fruit == params) {
-        i++;
-      }
-    }
-
-    if (i == 0) {
-      return Left(Failure('Fruit "$params" not found'));
-    }
-
-    return Right(i);
-  }
+  String toString() => '$fruitCount';
 }

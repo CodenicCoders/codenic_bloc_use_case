@@ -63,9 +63,17 @@ class StartWatchFailed<L> extends WatcherState {
 /// The state emitted when a [Watcher.watch] call succeeds.
 ///
 /// {@endtemplate}
-class StartWatchSuccess extends WatcherState {
+class StartWatchSuccess<R extends VerboseStream<dynamic, dynamic>>
+    extends WatcherState {
   /// {@macro StartWatchSuccess}
-  const StartWatchSuccess(int watchToken) : super(watchToken);
+  const StartWatchSuccess(this.verboseStream, int watchToken)
+      : super(watchToken);
+
+  /// {@macro rightValue}
+  final R verboseStream;
+
+  @override
+  List<Object?> get props => super.props..add(verboseStream);
 }
 
 /// {@template WatchErrorReceived}
