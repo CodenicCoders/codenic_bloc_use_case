@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bloc/bloc.dart';
 import 'package:codenic_bloc_use_case/codenic_bloc_use_case.dart';
 import 'package:codenic_bloc_use_case/src/base.dart';
 
