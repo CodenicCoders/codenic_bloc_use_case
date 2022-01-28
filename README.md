@@ -496,7 +496,9 @@ First, a `BatchRunner` must be given a list of `UseCaseFactory` responsible for
 creating and calling a specific `UseCase`, and a constructor parameter fed to 
 the use case factories for constructing the use cases.
  
-To start the batch run, call `BatchRunner.batchRun`. All use case factories on
+> A `Runner`, `Paginator`, and `Watcher` can be placed in a `BatchRunner`.
+
+To start the batch run, call `BatchRunner.batchRun`. All use case factories in
 the first batch will be triggered with the given parameter arguments. If all of 
 them are successful, then the next batch will push through followed by the 
 next. If any of the use case fails, then the batch run will halt.
@@ -509,8 +511,6 @@ Every batch run call, regardless whether it succeeds or fails, returns a
 `BatchRunResult` containing all the failed `leftUseCases` and successful
 `rightUseCases`.
  
-> A `Runner`, `Paginator`, and `Watcher` can be placed in a `BatchRunner`.
- 
 <img src="https://github.com/CodenicCoders/codenic_bloc_use_case/blob/master/doc/assets/batch_run_state_flow.webp?raw=true" alt="The Batch Runner State Flow" width=1056/>
  
 ### Creating A Batch Runner
@@ -521,7 +521,7 @@ For more info, see the [BatchRunner](https://github.com/CodenicCoders/codenic_bl
 /// Fetches a meal by creating and executing the [FetchFruits] and
 /// [FetchVeggies] use cases in the first batch, followed by [FetchGrains] in
 /// the second batch.
-class BatchFetchMeal extends BatchRunner<Failure, dynamic,
+class BatchFetchMeal extends BatchRunner<
     BatchFetchMealConstructorParams, BatchFetchMealCallParams> {
   BatchFetchMeal({
     required BatchFetchMealConstructorParams constructorParams,
@@ -530,14 +530,14 @@ class BatchFetchMeal extends BatchRunner<Failure, dynamic,
           useCaseFactories: [
             // The first batch of use cases
             [
-              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+              UseCaseFactory<BatchFetchMealConstructorParams,
                   BatchFetchMealCallParams, FetchFruits>(
                 useCaseFactory: (constructorParams) =>
                     FetchFruits(fruits: constructorParams.availableFruits),
                 onCall: (callParams, useCase) =>
                     useCase.call(callParams.fruitCount),
               ),
-              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+              UseCaseFactory<BatchFetchMealConstructorParams,
                   BatchFetchMealCallParams, FetchVeggies>(
                 useCaseFactory: (constructorParams) =>
                     FetchVeggies(veggies: constructorParams.availableVeggies),
@@ -547,7 +547,7 @@ class BatchFetchMeal extends BatchRunner<Failure, dynamic,
             ],
             // The second batch of use cases
             [
-              UseCaseFactory<Failure, dynamic, BatchFetchMealConstructorParams,
+              UseCaseFactory<BatchFetchMealConstructorParams,
                   BatchFetchMealCallParams, FetchGrains>(
                 useCaseFactory: (constructorParams) =>
                     FetchGrains(grains: constructorParams.availableGrains),
@@ -664,9 +664,9 @@ final batchRunResult = batchRunner.batchRunResult;
 // All use cases created and called in the batch run
 print(batchRunResult?.useCases);
 // The left values by all left (failed) use cases
-print(batchRunResult?.leftValues());
+print(batchRunResult?.leftValues<dynamic>());
 // The right values by all right (successful) use cases
-print(batchRunResult?.rightValues());
+print(batchRunResult?.rightValues<dynamic>());
  
 // Reference each use cases. If `call()` returns `null`, then that use case
 // may have not been created yet by the `UseCaseFactory`
@@ -697,29 +697,30 @@ yet.
 To customize this behavior, consider creating a child class of `UseCaseFactory`.
  
 ```dart
-class CustomUseCastFactory<L, R, SP1, SP2,
-       UC extends BaseUseCase<dynamic, L, R>>
-   extends UseCaseFactory<L, R, SP1, SP2, UC> {
- CustomUseCastFactory({
-   required UC Function(SP1 constructorParams) onInitialize,
-   required Future<Either<L, R>> Function(SP2 callParams, UC useCase) onCall,
- }) : super(onInitialize: onInitialize, onCall: onCall);
- 
- Future<Either<L, R>> call(SP1 constructorParams, SP2 callParams) async {
-   // Create the logic for initializing and calling the use case
-   if (useCase == null) {
-     useCase = onInitialize(constructorParams);
-     return onCall(callParams, useCase!);
-   }
- 
-   final currentValue = useCase!.value;
- 
-   if (currentValue == null || currentValue.isLeft()) {
-     return onCall(callParams, useCase!);
-   }
- 
-   return currentValue;
- }
+class CustomUseCastFactory<P1, P2, 
+  UC extends BaseUseCase<dynamic, dynamic, dynamic>>
+    extends UseCaseFactory<P1, P2, UC> {
+  CustomUseCastFactory({
+    required UC Function(P1 constructorParams) onInitialize,
+    required Future<Either<dynamic, dynamic>> 
+      Function(P2 callParams, UC useCase) onCall,
+  }) : super(onInitialize: onInitialize, onCall: onCall);
+  
+  Future<Either<dynamic, dynamic>> call(P1 constructorParams, P2 callParams) async {
+    // Create the logic for initializing and calling the use case
+    if (useCase == null) {
+      useCase = onInitialize(constructorParams);
+      return onCall(callParams, useCase!);
+    }
+  
+    final currentValue = useCase!.value;
+  
+    if (currentValue == null || currentValue.isLeft()) {
+      return onCall(callParams, useCase!);
+    }
+  
+    return currentValue;
+  }
 }
 ```
  

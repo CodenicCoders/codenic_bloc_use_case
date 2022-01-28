@@ -5,17 +5,15 @@ part of 'batch_runner.dart';
 /// A factory for lazily creating a [BaseUseCase] instance and for calling its
 /// [BaseUseCase.call] method.
 ///
-/// This creates a [UC] use case that emits a [L] left value and [R] right
-/// value.
-///
-/// [SP1] is the parameter passed to the [onInitialize] callback to create or
+/// [P1] is the parameter passed to the [onInitialize] callback to create or
 /// return an existing [UC] use case.
 ///
-/// [SP2] is the paramater passed to the [onCall] callback for executing the
+/// [P2] is the paramater passed to the [onCall] callback for executing the
 /// `call` method of the [UC] use case.
 ///
 /// {@endtemplate}
-class UseCaseFactory<L, R, SP1, SP2, UC extends BaseUseCase<dynamic, L, R>> {
+class UseCaseFactory<P1, P2,
+    UC extends BaseUseCase<dynamic, dynamic, dynamic>> {
   /// {@UseCaseFactory}
   UseCaseFactory({
     required this.onInitialize,
@@ -23,12 +21,13 @@ class UseCaseFactory<L, R, SP1, SP2, UC extends BaseUseCase<dynamic, L, R>> {
   });
 
   /// The callback for creating or returning a [UC] [BaseUseCase].
-  final UC Function(SP1 constructorParams) onInitialize;
+  final UC Function(P1 constructorParams) onInitialize;
 
   /// The callback triggered when [call] is executed.
   ///
   /// This is used to execute the `call` method of the [UC] use case.
-  final Future<Either<L, R>> Function(SP2 callParams, UC useCase) onCall;
+  final Future<Either<dynamic, dynamic>> Function(P2 callParams, UC useCase)
+      onCall;
 
   /// {@template useCase}
   ///
@@ -48,7 +47,10 @@ class UseCaseFactory<L, R, SP1, SP2, UC extends BaseUseCase<dynamic, L, R>> {
   ///
   /// If the use case has previously succeeded, then its `call` method will not
   /// be invoked and its [BaseUseCase.value] will be returned instead.
-  Future<Either<L, R>> call(SP1 constructorParams, SP2 callParams) async {
+  Future<Either<dynamic, dynamic>> call(
+    P1 constructorParams,
+    P2 callParams,
+  ) async {
     if (useCase == null) {
       useCase = onInitialize(constructorParams);
       return onCall(callParams, _useCase!);

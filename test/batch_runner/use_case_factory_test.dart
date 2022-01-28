@@ -19,8 +19,7 @@ void main() {
             'should only create use case on first call',
             () async {
               // Given
-              final useCaseFactory =
-                  UseCaseFactory<void, void, void, bool, TestUseCase>(
+              final useCaseFactory = UseCaseFactory<void, bool, TestUseCase>(
                 onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );
@@ -41,8 +40,7 @@ void main() {
             'should not re-call use case if completed',
             () async {
               // Given
-              final useCaseFactory =
-                  UseCaseFactory<void, void, void, bool, TestUseCase>(
+              final useCaseFactory = UseCaseFactory<void, bool, TestUseCase>(
                 onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );
@@ -63,8 +61,7 @@ void main() {
             'should not re-call use case if completed',
             () async {
               // Given
-              final useCaseFactory =
-                  UseCaseFactory<void, void, void, bool, TestUseCase>(
+              final useCaseFactory = UseCaseFactory<void, bool, TestUseCase>(
                 onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );
@@ -85,8 +82,7 @@ void main() {
             'should re-call use case if failed',
             () async {
               // Given
-              final useCaseFactory =
-                  UseCaseFactory<void, void, void, bool, TestUseCase>(
+              final useCaseFactory = UseCaseFactory<void, bool, TestUseCase>(
                 onInitialize: (_) => TestUseCase(),
                 onCall: (params, useCase) => useCase.call(params),
               );

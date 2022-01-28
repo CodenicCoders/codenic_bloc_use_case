@@ -20,18 +20,14 @@ part 'use_case_factory.dart';
 /// use cases. Since [UseCaseFactory] loads use cases lazily, the use case will
 /// only be initialized when it is called.
 ///
-/// [L] refers to the expected left value type of the associated use cases.
-///
-/// [R] refers to the expected right value type of the associated use cases.
-///
-/// [SP1] is the parameter passed to the [UseCaseFactory.call] callback to
+/// [P1] is the parameter passed to the [UseCaseFactory.call] callback to
 /// create or return an existing use case.
 ///
-/// [SP2] is the parameter passed to the [onCall] callback for executing the
+/// [P2] is the parameter passed to the [onCall] callback for executing the
 /// `call` method of each use case.
 ///
 /// {@endtemplate}
-class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
+class BatchRunner<P1, P2> extends DistinctCubit<BatchRunnerState> {
   /// {@macro BatchRunner}
   ///
   /// The first dimension of the [useCaseFactories] defines the use case batch,
@@ -40,7 +36,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
     required this.useCaseConstructorParams,
     required Iterable<
             Iterable<
-                UseCaseFactory<L, R, SP1, SP2, BaseUseCase<dynamic, L, R>>>>
+                UseCaseFactory<P1, P2, BaseUseCase<dynamic, dynamic, dynamic>>>>
         useCaseFactories,
   })  : useCaseFactories = UnmodifiableListView(
           useCaseFactories
@@ -50,7 +46,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
         super(const BatchRunnerInitial(DistinctCubit.initialActionToken));
 
   /// The parameter used to initialize the use case of [useCaseFactories].
-  final SP1 useCaseConstructorParams;
+  final P1 useCaseConstructorParams;
 
   /// A 2-Dimensional list of use case factories for creating and executing the
   /// use cases by batch.
@@ -59,7 +55,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
   /// dimension is the list of all its use cases.
   final UnmodifiableListView<
           UnmodifiableListView<
-              UseCaseFactory<L, R, SP1, SP2, BaseUseCase<dynamic, L, R>>>>
+              UseCaseFactory<P1, P2, BaseUseCase<dynamic, dynamic, dynamic>>>>
       useCaseFactories;
 
   /// {@template batchRunResult}
@@ -74,8 +70,8 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
 
   /// The callback triggered when [batchRun] is called.
   @protected
-  Future<Either<BatchRunResult<L, R>, BatchRunResult<L, R>>> onCall(
-    SP2 params,
+  Future<Either<BatchRunResult, BatchRunResult>> onCall(
+    P2 params,
   ) async {
     for (final useCaseFactoryGroup in useCaseFactories) {
       final results = await Future.wait(
@@ -93,7 +89,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
     return Right(_createBatchRunResult());
   }
 
-  BatchRunResult<L, R> _createBatchRunResult() => BatchRunResult<L, R>(
+  BatchRunResult _createBatchRunResult() => BatchRunResult(
         useCaseFactories
             .expand((e) => e)
             .where((e) => e.useCase?.value != null)
@@ -108,7 +104,7 @@ class BatchRunner<L, R, SP1, SP2> extends DistinctCubit<BatchRunnerState> {
   ///
   /// This will initially emit a [BatchRunning] state followed either by a
   /// [BatchRunFailed] or [BatchRunSuccess].
-  Future<void> batchRun({required SP2 params}) async {
+  Future<void> batchRun({required P2 params}) async {
     final actionToken = requestNewActionToken();
 
     await ensureAsync();

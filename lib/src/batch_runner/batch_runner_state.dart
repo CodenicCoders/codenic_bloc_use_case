@@ -47,12 +47,12 @@ class BatchRunning extends BatchRunnerState {
 /// The state emitted when [BatchRunner.batchRun] call fails.
 ///
 /// {@endtemplate}
-class BatchRunFailed<L, R> extends BatchRunnerState {
+class BatchRunFailed extends BatchRunnerState {
   /// {@macro BatchRunFailed}
   BatchRunFailed(this.leftValue, int batchRunToken) : super(batchRunToken);
 
   /// {@macro BatchRunFailed}
-  final BatchRunResult<L, R> leftValue;
+  final BatchRunResult leftValue;
 
   @override
   List<Object?> get props => super.props..add(leftValue);
@@ -63,12 +63,12 @@ class BatchRunFailed<L, R> extends BatchRunnerState {
 /// The state emitted when a [BatchRunner.batchRun] call succeeds.
 ///
 /// {@endtemplate}
-class BatchRunSuccess<L, R> extends BatchRunnerState {
+class BatchRunSuccess extends BatchRunnerState {
   /// {@macro BatchRunCompleted}
   BatchRunSuccess(this.rightValue, int batchRunToken) : super(batchRunToken);
 
   /// {@macro rightValue}
-  final BatchRunResult<L, R> rightValue;
+  final BatchRunResult rightValue;
 
   @override
   List<Object?> get props => super.props..add(rightValue);

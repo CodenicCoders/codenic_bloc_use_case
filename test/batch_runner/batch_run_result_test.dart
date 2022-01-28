@@ -4,22 +4,16 @@ import 'package:codenic_bloc_use_case/codenic_bloc_use_case.dart';
 import 'package:codenic_bloc_use_case/src/base.dart';
 import 'package:test/test.dart';
 
-class TestUseCase extends BaseUseCase<bool, String, String> {
-  TestUseCase(this.id);
+class TestUseCaseA extends BaseUseCase<bool, Exception, int> {
+  @override
+  Future<Either<Exception, int>> onCall(bool params) async =>
+      params ? const Right(1) : Left(Exception('Failed A'));
+}
 
-  final String id;
-
+class TestUseCaseB extends BaseUseCase<bool, String, String> {
   @override
   Future<Either<String, String>> onCall(bool params) async =>
-      params ? Right('Success $id') : Left('Failed $id');
-}
-
-class TestUseCaseA extends TestUseCase {
-  TestUseCaseA() : super('A');
-}
-
-class TestUseCaseB extends TestUseCase {
-  TestUseCaseB() : super('B');
+      params ? const Right('1') : const Left('Failed B');
 }
 
 void main() {
@@ -28,7 +22,7 @@ void main() {
     () {
       late TestUseCaseA testUseCaseA;
       late TestUseCaseB testUseCaseB;
-      late BatchRunResult<void, void> batchRunResult;
+      late BatchRunResult batchRunResult;
 
       setUp(() {
         testUseCaseA = TestUseCaseA();
@@ -40,7 +34,7 @@ void main() {
       });
 
       test(
-        'should return specific use case that has has been executed',
+        'should return specific use case that has been executed',
         () async {
           await testUseCaseA.call(true);
           expect(batchRunResult<TestUseCaseA>(), testUseCaseA);
@@ -53,7 +47,7 @@ void main() {
       );
 
       test(
-        'should return failed use cases',
+        'should return all failed use cases',
         () async {
           await Future.wait(
             [testUseCaseA.call(false), testUseCaseB.call(false)],
@@ -83,12 +77,25 @@ void main() {
       );
 
       test(
-        'should return all error values',
+        'should return all failed values',
         () async {
           await Future.wait(
             [testUseCaseA.call(false), testUseCaseB.call(false)],
           );
-          expect(batchRunResult.leftValues(), ['Failed A', 'Failed B']);
+          expect(
+            batchRunResult.leftValues<dynamic>(),
+            [isA<Exception>(), 'Failed B'],
+          );
+        },
+      );
+
+      test(
+        'should return all failed values with specified return type',
+        () async {
+          await Future.wait(
+            [testUseCaseA.call(false), testUseCaseB.call(false)],
+          );
+          expect(batchRunResult.leftValues<String>(), ['Failed B']);
         },
       );
 
@@ -98,7 +105,23 @@ void main() {
           await Future.wait(
             [testUseCaseA.call(true), testUseCaseB.call(true)],
           );
-          expect(batchRunResult.rightValues(), ['Success A', 'Success B']);
+          expect(
+            batchRunResult.rightValues<dynamic>(),
+            [1, '1'],
+          );
+        },
+      );
+
+      test(
+        'should return all success values with specified return type',
+        () async {
+          await Future.wait(
+            [testUseCaseA.call(true), testUseCaseB.call(true)],
+          );
+          expect(
+            batchRunResult.rightValues<int>(),
+            [1],
+          );
         },
       );
     },
