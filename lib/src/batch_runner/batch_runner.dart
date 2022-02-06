@@ -58,7 +58,7 @@ class BatchRunner<P1, P2> extends DistinctCubit<BatchRunnerState> {
               UseCaseFactory<P1, P2, BaseUseCase<dynamic, dynamic, dynamic>>>>
       useCaseFactories;
 
-  /// {@template batchRunResult}
+  /// {@template BatchRunner.batchRunResult}
   ///
   /// The output of a [batchRun] call.
   ///

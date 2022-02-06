@@ -51,7 +51,7 @@ class RunFailed<L> extends RunnerState {
   /// {@macro RunFailed}
   const RunFailed(this.leftValue, int runToken) : super(runToken);
 
-  /// {@macro leftValue}
+  /// {@macro Runner.leftValue}
   final L leftValue;
 
   @override
@@ -67,7 +67,7 @@ class RunSuccess<R> extends RunnerState {
   /// {@macro RunSuccess}
   const RunSuccess(this.rightValue, int runToken) : super(runToken);
 
-  /// {@macro rightValue}
+  /// {@macro Runner.rightValue}
   final R rightValue;
 
   @override

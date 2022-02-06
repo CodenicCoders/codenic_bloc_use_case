@@ -51,7 +51,7 @@ class BatchRunFailed extends BatchRunnerState {
   /// {@macro BatchRunFailed}
   BatchRunFailed(this.leftValue, int batchRunToken) : super(batchRunToken);
 
-  /// {@macro BatchRunFailed}
+  /// {@macro BatchRunner.batchRunResult}
   final BatchRunResult leftValue;
 
   @override
@@ -67,7 +67,7 @@ class BatchRunSuccess extends BatchRunnerState {
   /// {@macro BatchRunCompleted}
   BatchRunSuccess(this.rightValue, int batchRunToken) : super(batchRunToken);
 
-  /// {@macro rightValue}
+  /// {@macro BatchRunner.batchRunResult}
   final BatchRunResult rightValue;
 
   @override

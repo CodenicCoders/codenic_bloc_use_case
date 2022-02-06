@@ -51,7 +51,7 @@ class StartWatchFailed<L> extends WatcherState {
   /// {@macro StartWatchFailed}
   const StartWatchFailed(this.leftValue, int watchToken) : super(watchToken);
 
-  /// {@macro leftValue}
+  /// {@macro Watcher.leftValue}
   final L leftValue;
 
   @override
@@ -69,7 +69,7 @@ class StartWatchSuccess<R extends VerboseStream<dynamic, dynamic>>
   const StartWatchSuccess(this.verboseStream, int watchToken)
       : super(watchToken);
 
-  /// {@macro rightValue}
+  /// {@macro Watcher.rightValue}
   final R verboseStream;
 
   @override
@@ -86,7 +86,7 @@ class WatchErrorReceived<LE> extends WatcherState {
   /// {@macro WatchErrorReceived}
   const WatchErrorReceived(this.leftEvent, int watchToken) : super(watchToken);
 
-  /// {@macro leftEvent}
+  /// {@macro Watcher.leftEvent}
   final LE leftEvent;
 
   @override
@@ -103,7 +103,7 @@ class WatchDataReceived<RE> extends WatcherState {
   /// {@macro WatchDataReceived}
   const WatchDataReceived(this.rightEvent, int watchToken) : super(watchToken);
 
-  /// {@macro rightEvent}
+  /// {@macro Watcher.rightEvent}
   final RE rightEvent;
 
   @override

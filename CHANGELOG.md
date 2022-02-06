@@ -1,4 +1,7 @@
-## 0.1.0-dev.7
+## 0.1.0-dev.8
+- Make annotation `template` and `macro` contain class name suffix
+
+## 0.1.0-dev.6/7
 
 - Export `equatable` package
 - Export `ensure_async.dart` and `base.dart` file.

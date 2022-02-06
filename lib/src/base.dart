@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 /// The [call] method represents the use case action which accepts a [P]
 /// parameter which either outputs an [L] error value or an [R] success value.
 abstract class BaseUseCase<P, L, R> {
-  /// {@template value}
+  /// {@template BaseUseCase.value}
   ///
   /// The latest value which can either reference the [leftValue] or the
   /// [rightValue].
@@ -19,7 +19,7 @@ abstract class BaseUseCase<P, L, R> {
   /// {@endtemplate}
   Either<L, R>? _value;
 
-  /// {@macro value}
+  /// {@macro BaseUseCase.value}
   Either<L, R>? get value => _value;
 
   @protected
@@ -28,24 +28,24 @@ abstract class BaseUseCase<P, L, R> {
     newValue?.fold((l) => _leftValue = l, (r) => _rightValue = r);
   }
 
-  /// {@template leftValue}
+  /// {@template BaseUseCase.leftValue}
   ///
   /// The last error value.
   ///
   /// {@endtemplate}
   L? _leftValue;
 
-  /// {@macro  leftValue}
+  /// {@macro BaseUseCase.leftValue}
   L? get leftValue => _leftValue;
 
-  /// {@template rightValue}
+  /// {@template BaseUseCase.rightValue}
   ///
   /// The last success value.
   ///
   /// {@endtemplate}
   R? _rightValue;
 
-  /// {@macro rightValue}
+  /// {@macro BaseUseCase.rightValue}
   R? get rightValue => _rightValue;
 
   /// The use case action callback.
@@ -81,7 +81,7 @@ abstract class DistinctCubit<S> extends Cubit<S> {
 
   /// The initial action token.
   ///
-  /// {@template actionToken}
+  /// {@template DistinctCubit.actionToken}
   ///
   /// An action token identifies a method call that can emit states. The
   /// generated token is used in conjunction with [distinctEmit] to ensure that
@@ -93,7 +93,7 @@ abstract class DistinctCubit<S> extends Cubit<S> {
 
   /// The active action token.
   ///
-  /// {@macro actionToken}
+  /// {@macro DistinctCubit.actionToken}
   int _activeActionToken = initialActionToken;
 
   /// Generates a new action token.
@@ -101,7 +101,7 @@ abstract class DistinctCubit<S> extends Cubit<S> {
   /// This must be called within a method that can emit states to generate
   /// their unique action token.
   ///
-  /// {@macro actionToken}
+  /// {@macro DistinctCubit.actionToken}
   @protected
   int requestNewActionToken() => ++_activeActionToken;
 

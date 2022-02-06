@@ -39,7 +39,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   @override
   Either<L, R>? get value => super.value;
 
-  /// {@template leftValue}
+  /// {@template Watcher.leftValue}
   ///
   /// The error emitted by the [watch] call that prevented the creation of a
   /// stream.
@@ -50,7 +50,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   @override
   L? get leftValue => super.leftValue;
 
-  /// {@template rightValue}
+  /// {@template Watcher.rightValue}
   ///
   /// The [VerboseStream] returned by a successful [watch] call.
   ///
@@ -60,7 +60,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   @override
   R? get rightValue => super.rightValue;
 
-  /// {@template event}
+  /// {@template Watcher.event}
   ///
   /// The latest value emitted by the [watch]-created stream which can either
   /// reference the [leftEvent] or the [rightEvent].
@@ -73,7 +73,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   /// {@endtemplate}
   Either<LE, RE>? _event;
 
-  /// {@macro event}
+  /// {@macro Watcher.event}
   Either<LE, RE>? get event => _event;
 
   @protected
@@ -82,7 +82,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
     newEvent?.fold((l) => _leftEvent = l, (r) => _rightEvent = r);
   }
 
-  /// {@template leftEvent}
+  /// {@template Watcher.leftEvent}
   ///
   /// The last error event emitted by the [watch]-created stream.
   ///
@@ -92,10 +92,10 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   /// {@endtemplate}
   LE? _leftEvent;
 
-  /// {@macro errorEvent}
+  /// {@macro Watcher.errorEvent}
   LE? get leftEvent => _leftEvent;
 
-  /// {@template rightEvent}
+  /// {@template Watcher.rightEvent}
   ///
   /// The last data event emitted by the [watch]-created stream.
   ///
@@ -105,7 +105,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   /// {@endtemplate}
   RE? _rightEvent;
 
-  /// {@macro rightEvent}
+  /// {@macro Watcher.rightEvent}
   RE? get rightEvent => _rightEvent;
 
   @override

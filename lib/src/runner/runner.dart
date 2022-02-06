@@ -27,7 +27,7 @@ abstract class Runner<P, L, R> extends DistinctCubit<RunnerState>
   @override
   Either<L, R>? get value => super.value;
 
-  /// {@template leftValue}
+  /// {@template Runner.leftValue}
   ///
   /// The last error value emitted by calling [run].
   ///
@@ -37,7 +37,7 @@ abstract class Runner<P, L, R> extends DistinctCubit<RunnerState>
   @override
   L? get leftValue => super.leftValue;
 
-  /// {@template rightValue}
+  /// {@template Runner.rightValue}
   ///
   /// The last success value emitted by calling [run].
   ///

@@ -45,7 +45,7 @@ class PageLoading extends PaginatorState {
   /// {@macro FirstPageLoading}
   const PageLoading(this.pageIndex, int paginateToken) : super(paginateToken);
 
-  /// {@template pageIndex}
+  /// {@template Paginator.pageIndex}
   ///
   /// The index of the page being loaded.
   ///
@@ -66,10 +66,10 @@ class PageLoadFailed<L> extends PaginatorState {
   const PageLoadFailed(this.leftValue, this.pageIndex, int paginateToken)
       : super(paginateToken);
 
-  /// {@macro leftValue}
+  /// {@macro Paginator.leftValue}
   final L leftValue;
 
-  /// {@macro pageIndex}
+  /// {@macro Paginator.pageIndex}
   final int pageIndex;
 
   @override
@@ -89,10 +89,10 @@ class PageLoadSuccess<T extends Object> extends PaginatorState {
     int paginateToken,
   ) : super(paginateToken);
 
-  /// {@macro pageResultItemList}
+  /// {@macro Paginator.pageResultItemList}
   final PageResultItemList<T, PageResult<T>> pageResultItemList;
 
-  /// {@macro pageIndex}
+  /// {@macro Paginator.pageIndex}
   final int pageIndex;
 
   @override

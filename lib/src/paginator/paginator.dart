@@ -46,7 +46,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   /// which will also be used to fetch the next page at [loadNextPage].
   P? _params;
 
-  /// {@template value}
+  /// {@template Paginator.value}
   ///
   /// The latest value emitted by calling [loadFirstPage] or [loadNextPage]
   /// which can either reference the [leftValue] or the [rightValue].
@@ -60,7 +60,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   @override
   Either<L, R>? get value => super.value;
 
-  /// {@template leftValue}
+  /// {@template Paginator.leftValue}
   ///
   /// The last failed value emitted by calling [loadFirstPage] or
   /// [loadNextPage].
@@ -72,7 +72,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   @override
   L? get leftValue => super.leftValue;
 
-  /// {@template leftValue}
+  /// {@template Paginator.rightValue}
   ///
   /// The last [PageResult] value emitted by calling [loadFirstPage] or
   /// [loadNextPage].
@@ -84,7 +84,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   @override
   R? get rightValue => super.rightValue;
 
-  /// {@template pageResultItemList}
+  /// {@template Paginator.pageResultItemList}
   ///
   /// A collection of all [R] [PageResult]s emitted by calling [loadFirstPage]
   /// and [loadNextPage] and all their merged [T] items.
@@ -94,7 +94,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   /// {@endtemplate}
   PageResultItemList<T, R>? _pageResultItemList;
 
-  /// {@macro pageResultItemList}
+  /// {@macro Paginator.pageResultItemList}
   PageResultItemList<T, R>? get pageResultItemList => _pageResultItemList;
 
   /// The use case action callback used by [loadFirstPage] and [loadNextPage]
