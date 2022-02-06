@@ -17,7 +17,7 @@ Before creating a pull request please:
 1. Fork the repository and create your branch from `master`.
 2. Install all dependencies (`dart pub get`).
 3. Squash your commits and ensure you have a meaningful commit message.
-4. If you’ve fixed a bug or added code that should be tested, add tests and ensure at 100% test coverage. (`flutter test --coverage --test-randomize-ordering-seed random && genhtml coverage/lcov.info --output=coverage`).
+4. If you’ve fixed a bug or added code that should be tested, add tests and ensure 100% test coverage. (`flutter test --coverage --test-randomize-ordering-seed random && genhtml coverage/lcov.info --output=coverage`).
    - Flutter command is used for better reliability
    - You can use [Coverage Gutters](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) in VSCode to check the coverage report
 5. Ensure the test suite passes.

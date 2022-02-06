@@ -1,3 +1,8 @@
+## 0.1.0-dev.7
+
+- Export `equatable` package
+- Export `ensure_async.dart` and `base.dart` file.
+
 ## 0.1.0-dev.5
 
 - Remove `L` and `R` generic types in `BatchRunner`, `BatchRunResult` and 

@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:codenic_bloc_use_case/codenic_bloc_use_case.dart';
-import 'package:codenic_bloc_use_case/src/util/ensure_async.dart';
 import 'package:test/test.dart';
 import 'package:very_good_analysis/very_good_analysis.dart';
 

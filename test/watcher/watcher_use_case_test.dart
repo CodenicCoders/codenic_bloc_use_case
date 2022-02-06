@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:codenic_bloc_use_case/codenic_bloc_use_case.dart';
-import 'package:codenic_bloc_use_case/src/util/ensure_async.dart';
 import 'package:test/test.dart';
 
 /// A dummy use case for testing the [Watcher].

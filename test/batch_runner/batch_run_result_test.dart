@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:codenic_bloc_use_case/codenic_bloc_use_case.dart';
-import 'package:codenic_bloc_use_case/src/base.dart';
 import 'package:test/test.dart';
 
 class TestUseCaseA extends BaseUseCase<bool, Exception, int> {
