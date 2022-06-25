@@ -29,14 +29,14 @@ void main() {
       group(
         'run',
         () {
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should return success value when run succeeds',
             build: TestNextEvenNumber.new,
             act: (runner) => runner.run(params: 2),
             expect: () => const [Running(1), RunSuccess(4, 1)],
           );
 
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should return failure value when run fails',
             build: TestNextEvenNumber.new,
             act: (runner) => runner.run(params: 1),
@@ -46,7 +46,7 @@ void main() {
             ],
           );
 
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should not emit state from old run call when new run call is made '
             'at the same time',
             build: TestNextEvenNumber.new,
@@ -58,7 +58,7 @@ void main() {
             ],
           );
 
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should cancel state emission from old running batch-run call when '
             'new batch-run call is made',
             build: TestNextEvenNumber.new,
@@ -79,7 +79,7 @@ void main() {
       group(
         'value',
         () {
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should identify if last emitted value is a success value',
             build: TestNextEvenNumber.new,
             act: (runner) async {
@@ -89,7 +89,7 @@ void main() {
             verify: (runner) => expect(runner.value?.isRight(), true),
           );
 
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should identify if last emitted value is an error value',
             build: TestNextEvenNumber.new,
             act: (runner) async {
@@ -99,7 +99,7 @@ void main() {
             verify: (runner) => expect(runner.value?.isLeft(), true),
           );
 
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should clear value when reset',
             build: TestNextEvenNumber.new,
             act: (runner) async {
@@ -114,7 +114,7 @@ void main() {
       group(
         'left value',
         () {
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should still have reference to the last error value when runner '
             'succeeds',
             build: TestNextEvenNumber.new,
@@ -126,7 +126,7 @@ void main() {
                 expect(runner.leftValue, 'Argument is not an even number'),
           );
 
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should clear left value when reset',
             build: TestNextEvenNumber.new,
             act: (runner) async {
@@ -141,7 +141,7 @@ void main() {
       group(
         'right value',
         () {
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should still have reference to the last success value when runner '
             'fails',
             build: TestNextEvenNumber.new,
@@ -152,7 +152,7 @@ void main() {
             verify: (runner) => expect(runner.rightValue, 4),
           );
 
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should clear right value when reset',
             build: TestNextEvenNumber.new,
             act: (runner) async {
@@ -167,7 +167,7 @@ void main() {
       group(
         'reset',
         () {
-          blocTest<Runner, RunnerState>(
+          blocTest<Runner<int, String, int>, RunnerState>(
             'should reset runner',
             build: TestNextEvenNumber.new,
             act: (runner) async {

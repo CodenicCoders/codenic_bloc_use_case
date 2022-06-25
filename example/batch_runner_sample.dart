@@ -85,7 +85,10 @@ Future<void> batchRunner() async {
   printBatchRunResults(batchFetchMeal);
 }
 
-void printBatchRunResults(BatchRunner batchRunner) {
+void printBatchRunResults(
+  BatchRunner<BatchFetchMealConstructorParams, BatchFetchMealCallParams>
+      batchRunner,
+) {
   final batchRunResult = batchRunner.batchRunResult;
 
   print('');

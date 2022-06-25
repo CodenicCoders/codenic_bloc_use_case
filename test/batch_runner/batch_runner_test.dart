@@ -78,7 +78,7 @@ void main() {
       group(
         'batch run',
         () {
-          blocTest<BatchRunner, BatchRunnerState>(
+          blocTest<BatchRunner<void, int>, BatchRunnerState>(
             'should not call next batch of use cases when current batch fails',
             build: () => batchRunner,
             act: (batchRunner) => batchRunner.batchRun(params: 3),
@@ -100,7 +100,7 @@ void main() {
             ),
           );
 
-          blocTest<BatchRunner, BatchRunnerState>(
+          blocTest<BatchRunner<void, int>, BatchRunnerState>(
             'should show failed use cases in batch when batch fails',
             build: () => batchRunner,
             act: (batchRunner) => batchRunner.batchRun(params: 8),
@@ -123,7 +123,7 @@ void main() {
             ),
           );
 
-          blocTest<BatchRunner, BatchRunnerState>(
+          blocTest<BatchRunner<void, int>, BatchRunnerState>(
             'should show all completed use cases when batch run succeeds',
             build: () => batchRunner,
             act: (batchRunner) => batchRunner.batchRun(params: 30),
@@ -152,7 +152,7 @@ void main() {
             ),
           );
 
-          blocTest<BatchRunner, BatchRunnerState>(
+          blocTest<BatchRunner<void, void>, BatchRunnerState>(
             'should not emit state from old batch-run call when new batch-run '
             'call is made at the same time',
             build: () => BatchRunner<void, void>(
@@ -174,7 +174,7 @@ void main() {
             ],
           );
 
-          blocTest<BatchRunner, BatchRunnerState>(
+          blocTest<BatchRunner<void, int>, BatchRunnerState>(
             'should cancel state emission from old running run call when new '
             'run call is made',
             build: () => batchRunner,
@@ -205,7 +205,7 @@ void main() {
       group(
         'reset',
         () {
-          blocTest<BatchRunner, BatchRunnerState>(
+          blocTest<BatchRunner<void, int>, BatchRunnerState>(
             'should clear values when reset',
             build: () => batchRunner,
             act: (batchRunner) async {
@@ -223,7 +223,7 @@ void main() {
             },
           );
 
-          blocTest<BatchRunner, BatchRunnerState>(
+          blocTest<BatchRunner<void, int>, BatchRunnerState>(
             'should allow re-call of completed use cases when they have been '
             'reset',
             build: () => batchRunner,

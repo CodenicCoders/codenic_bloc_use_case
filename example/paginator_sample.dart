@@ -82,7 +82,10 @@ Future<void> paginator() async {
   );
 }
 
-void printPaginateResults(Paginator paginator) {
+void printPaginateResults(
+  Paginator<PaginateFruitsParams, Failure, PaginateFruitsResult, String>
+      paginator,
+) {
   print('');
 
   // The last left value returned when calling `loadFirstPage()` or

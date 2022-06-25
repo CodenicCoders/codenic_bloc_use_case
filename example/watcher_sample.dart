@@ -71,7 +71,11 @@ Future<void> watcher() async {
   );
 }
 
-void printWatchResults(Watcher watcher) {
+void printWatchResults(
+  Watcher<WatchFruitBasketParams, Failure, VerboseStream<Failure, FruitBasket>,
+          Failure, FruitBasket>
+      watcher,
+) {
   print('');
 
   // The last left value returned when calling `watch()`

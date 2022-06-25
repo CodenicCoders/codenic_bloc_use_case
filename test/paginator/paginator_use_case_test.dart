@@ -61,7 +61,8 @@ void main() {
       group(
         'load first page',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should return page ite vms when load first page succeeds',
             build: TestPaginateFruits.new,
             act: (paginator) => paginator.loadFirstPage(params: 2),
@@ -82,7 +83,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should return failure value when load first page fails',
             build: TestPaginateFruits.new,
             act: (paginator) => paginator.loadFirstPage(params: 0),
@@ -96,7 +98,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should not emit state from old load-first-page call when new '
             'load-first-page call is made at the same time',
             build: TestPaginateFruits.new,
@@ -121,7 +124,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should cancel state emission from old running load-first-page '
             'call when new load-first-page call is made',
             build: TestPaginateFruits.new,
@@ -148,7 +152,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should clear previously loaded pages when load-first-page is '
             'successfully called',
             build: TestPaginateFruits.new,
@@ -186,7 +191,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should continue previous pagination when load-first-page '
             'fails',
             build: TestPaginateFruits.new,
@@ -240,7 +246,8 @@ void main() {
       group(
         'load next page',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should load next page when first page is loaded',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -281,7 +288,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should show error when loading next page when first page is not '
             'loaded yet',
             build: TestPaginateFruits.new,
@@ -316,7 +324,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should inform when last page has been loaded',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -378,7 +387,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should not emit state from old load-first-page call when new '
             'load-first-page call is made at the same time',
             build: TestPaginateFruits.new,
@@ -424,7 +434,8 @@ void main() {
             ],
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should cancel state emission from old running load-next-page '
             'call when new load-next-page call is made',
             build: TestPaginateFruits.new,
@@ -474,7 +485,8 @@ void main() {
       group(
         'call',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should return page result without emitting states when call is '
             'directly triggered',
             build: TestPaginateFruits.new,
@@ -482,7 +494,8 @@ void main() {
             verify: (paginator) => expect(paginator.value?.isRight(), true),
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should identify if last emitted value is an error value',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -492,7 +505,8 @@ void main() {
             verify: (paginator) => expect(paginator.value?.isLeft(), true),
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should clear value when reset',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -507,7 +521,8 @@ void main() {
       group(
         'value',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should identify if last emitted value is a success value',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -517,7 +532,8 @@ void main() {
             verify: (paginator) => expect(paginator.value?.isRight(), true),
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should identify if last emitted value is an error value',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -527,7 +543,8 @@ void main() {
             verify: (paginator) => expect(paginator.value?.isLeft(), true),
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should clear value when reset',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -542,7 +559,8 @@ void main() {
       group(
         'left value',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should still have reference to the last error value when '
             'pagination succeeds',
             build: TestPaginateFruits.new,
@@ -556,7 +574,8 @@ void main() {
             ),
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should clear left value when reset',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -571,7 +590,8 @@ void main() {
       group(
         'right value',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should still have reference to the last success value when '
             'pagination fails',
             build: TestPaginateFruits.new,
@@ -588,7 +608,8 @@ void main() {
             ),
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should clear right value when reset',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -603,7 +624,8 @@ void main() {
       group(
         'Current page index',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should set page index to initial value when reset',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -618,7 +640,8 @@ void main() {
       group(
         'page result item list',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should reset page result item list when first page is loaded',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -638,7 +661,8 @@ void main() {
             ),
           );
 
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should clear page result item list when reset',
             build: TestPaginateFruits.new,
             act: (paginator) async {
@@ -653,7 +677,8 @@ void main() {
       group(
         'reset',
         () {
-          blocTest<Paginator, PaginatorState>(
+          blocTest<Paginator<int, String, PageResult<String>, String>,
+              PaginatorState>(
             'should reset paginator',
             build: TestPaginateFruits.new,
             act: (paginator) async {

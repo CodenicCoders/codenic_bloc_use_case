@@ -43,7 +43,9 @@ Future<void> runner() async {
   );
 }
 
-void printRunResults(Runner runner) {
+void printRunResults(
+  Runner<CountFruitParams, Failure, CountFruitResult> runner,
+) {
   print('');
 
   // The last left value returned when calling `run()`
