@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2 # Use Flutter SDK for reliable test coverage
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2.5.0 # Use Flutter SDK for reliable test coverage
 
       - name: Install Dependencies
         run: dart pub get
@@ -40,8 +40,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2.5.0
 
       - name: Install Dependencies
         run: |

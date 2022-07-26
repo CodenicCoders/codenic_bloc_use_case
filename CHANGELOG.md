@@ -1,3 +1,6 @@
+## 1.0.0
+– Migrate from `dartz` to `fpdart`
+
 ## 0.1.0
 
 – Bump dependencies

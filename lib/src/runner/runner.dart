@@ -1,7 +1,7 @@
 import 'package:codenic_bloc_use_case/src/base.dart';
 import 'package:codenic_bloc_use_case/src/util/ensure_async.dart';
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:meta/meta.dart';
 
 part 'runner_state.dart';
