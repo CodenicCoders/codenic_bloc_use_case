@@ -12,21 +12,19 @@ part 'paginator_state.dart';
 
 /// {@template Paginator}
 ///
-/// An abstract use case for fetching a list of [T] items in a paginated way
+/// An abstract use case for fetching a list of [R] items in a paginated way
 /// via a cubit.
 ///
 /// This accepts a [P] parameter when loading the first page.
 ///
 /// If an error occurs during the of the first or next page, an [L] failed
 /// value will be emitted. If the page has successfully been loaded, then a
-/// [PageResultItemList] containing the latest [R] [PageResult] will be emitted.
-///
-/// A custom [R] [PageResult] can be provided. If none, this should be set
-/// to `PageResult<T>`.
+/// [PageResultItemList] containing the latest [PageResult][R] will be emitted.
 ///
 /// {@endtemplate}
-abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
-    extends DistinctCubit<PaginatorState> with BaseUseCase<P, L, R> {
+abstract class Paginator<P, L, R extends Object>
+    extends DistinctCubit<PaginatorState>
+    with BaseUseCase<P, L, PageResult<R>> {
   /// {@macro Paginator}
   Paginator()
       : super(
@@ -58,7 +56,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   ///
   /// {@endtemplate}
   @override
-  Either<L, R>? get value => super.value;
+  Either<L, PageResult<R>>? get value => super.value;
 
   /// {@template Paginator.leftValue}
   ///
@@ -82,20 +80,20 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   ///
   /// {@endtemplate}
   @override
-  R? get rightValue => super.rightValue;
+  PageResult<R>? get rightValue => super.rightValue;
 
   /// {@template Paginator.pageResultItemList}
   ///
-  /// A collection of all [R] [PageResult]s emitted by calling [loadFirstPage]
-  /// and [loadNextPage] and all their merged [T] items.
+  /// A collection of all [PageResult][R]s emitted by calling [loadFirstPage]
+  /// and [loadNextPage] and all their merged [R] items.
   ///
   /// This collection is reset every time [loadFirstPage] is called.
   ///
   /// {@endtemplate}
-  PageResultItemList<T, R>? _pageResultItemList;
+  PageResultItemList<R>? _pageResultItemList;
 
   /// {@macro Paginator.pageResultItemList}
-  PageResultItemList<T, R>? get pageResultItemList => _pageResultItemList;
+  PageResultItemList<R>? get pageResultItemList => _pageResultItemList;
 
   /// The use case action callback used by [loadFirstPage] and [loadNextPage]
   /// to fetch the next page.
@@ -104,10 +102,16 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
   /// the previous page which may be used to fetch the next page.
   @protected
   @override
-  Future<Either<L, R>> onCall(P params, [R? previousPageResult]);
+  Future<Either<L, PageResult<R>>> onCall(
+    P params, [
+    PageResult<R>? previousPageResult,
+  ]);
 
   @override
-  Future<Either<L, R>> call(P params, [R? previousPageResult]) async {
+  Future<Either<L, PageResult<R>>> call(
+    P params, [
+    PageResult<R>? previousPageResult,
+  ]) async {
     value = await onCall(params, previousPageResult);
     return value!;
   }
@@ -145,7 +149,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
             _currentPageIndex = pageIndex;
 
             final newPageResultItemList =
-                PageResultItemList<T, R>(UnmodifiableListView([r]));
+                PageResultItemList<R>(UnmodifiableListView([r]));
 
             return PageLoadSuccess(
               _pageResultItemList = newPageResultItemList,
@@ -202,7 +206,7 @@ abstract class Paginator<P, L, R extends PageResult<T>, T extends Object>
           (r) {
             _currentPageIndex = pageIndex;
 
-            final newPageResultCollection = PageResultItemList<T, R>(
+            final newPageResultCollection = PageResultItemList<R>(
               UnmodifiableListView([..._pageResultItemList!.pageResults, r]),
             );
 

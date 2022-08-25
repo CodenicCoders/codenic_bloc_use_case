@@ -151,14 +151,13 @@ A paginator has two available methods for loading pages.
 To start paginating, `Paginator.loadFirstPage()` must initially be called. This 
 accepts some given parameter arguments for loading the first page. If the 
 loading fails, then a `Left` value is returned. Otherwise, if the loading 
-succeeds, a `Right` value instance of `PageResult` and a `PageResultListItem` 
-will be returned.
+succeeds, aN instance of `PageResult<R>` and a `PageResultListItem<R>` will be returned.
  
 <img src="https://github.com/CodenicCoders/codenic_bloc_use_case/blob/master/doc/assets/load_first_page_state_flow.webp?raw=true" alt="The Paginator State Flow for Loading the First Page" width=735/>
  
 The `PageResult` contains all the items available in the fetched page as well 
 as a `token` for loading the next one, whereas a `PageResultListItem` is a 
-collection of all page results and their aggregated items.
+collection of all `PageResult`s and their aggregated items.
  
 To load the next page, call `Paginator.loadNextPage()`. This uses the old given 
 parameter arguments and page result to load the upcoming page. If the last page 
@@ -180,8 +179,7 @@ For more info, see the [Paginator](https://github.com/CodenicCoders/codenic_bloc
 ```dart
 /// A paginator that accepts a list of fruits then returns them in a paginated
 /// manner.
-class PaginateFruits extends Paginator<PaginateFruitsParams, Failure,
-   PageResult<String>, String> {
+class PaginateFruits extends Paginator<PaginateFruitsParams, Failure, String> {
  
  /// The callback executed when [loadFirstPage] or [loadNextPage] gets called.
  /// Page loading occurs here.

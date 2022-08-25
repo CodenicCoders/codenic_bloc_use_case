@@ -2,13 +2,13 @@ part of 'paginator.dart';
 
 /// {@template PageResultItemList}
 ///
-/// A list of [U] [PageResult]s and all their merged [T] items.
+/// A list of [PageResult][T]s and all their merged [T] items.
 ///
 /// {@endtemplate}
-class PageResultItemList<T extends Object, U extends PageResult<T>>
-    extends UnmodifiableListView<T> with EquatableMixin {
+class PageResultItemList<T extends Object> extends UnmodifiableListView<T>
+    with EquatableMixin {
   /// {@macro PageResultItemList}
-  PageResultItemList(Iterable<U> pageResults)
+  PageResultItemList(Iterable<PageResult<T>> pageResults)
       : pageResults = UnmodifiableListView(pageResults.toList()),
         super(
           pageResults.fold<List<T>>(
@@ -18,7 +18,7 @@ class PageResultItemList<T extends Object, U extends PageResult<T>>
         );
 
   /// The list of [PageResult]s.
-  final UnmodifiableListView<U> pageResults;
+  final UnmodifiableListView<PageResult<T>> pageResults;
 
   @override
   List<Object?> get props => [...pageResults];

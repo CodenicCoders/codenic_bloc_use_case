@@ -81,7 +81,7 @@ class PageLoadFailed<L> extends PaginatorState {
 /// The state emitted when a [Paginator.loadFirstPage] call succeeds.
 ///
 /// {@endtemplate}
-class PageLoadSuccess<T extends Object> extends PaginatorState {
+class PageLoadSuccess<R extends Object> extends PaginatorState {
   /// {@macro FirstPageLoadSuccess}
   const PageLoadSuccess(
     this.pageResultItemList,
@@ -90,7 +90,7 @@ class PageLoadSuccess<T extends Object> extends PaginatorState {
   ) : super(paginateToken);
 
   /// {@macro Paginator.pageResultItemList}
-  final PageResultItemList<T, PageResult<T>> pageResultItemList;
+  final PageResultItemList<R> pageResultItemList;
 
   /// {@macro Paginator.pageIndex}
   final int pageIndex;

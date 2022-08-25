@@ -14,8 +14,8 @@ part 'watcher_state.dart';
 /// An abstract use case for running a stream asynchronously via a cubit which
 /// accepts a [P] parameter for creating the stream.
 ///
-/// The stream is created from the obtained [VerboseStream<L, R>] when [watch] 
-/// is executed successfully. [L] is the error returned when stream creation 
+/// The stream is created from the obtained [VerboseStream][L][R] when [watch]
+/// is executed successfully. [L] is the error returned when stream creation
 /// fails.
 ///
 /// The created stream emits either an [L] error event or an [R] data event.
