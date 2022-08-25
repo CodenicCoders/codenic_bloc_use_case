@@ -1,12 +1,15 @@
 ## 2.0.0
-– Reduce generic types of `Watcher` and `Paginator`
+
+- Reduce generic types of `Watcher` and `Paginator`
+- Bump dependencies
 
 ## 1.0.0
-– Migrate from `dartz` to `fpdart`
+
+- Migrate from `dartz` to `fpdart`
 
 ## 0.1.0
 
-– Bump dependencies
+- Bump dependencies
 - Move from `dev` to `stable`
 
 ## 0.1.0-dev.8
