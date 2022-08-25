@@ -14,10 +14,17 @@ part 'paginator_sample.dart';
 part 'runner_sample.dart';
 part 'watcher_sample.dart';
 
+/// To run, enter the following code:
+/// ```
+/// dart run example/main.dart`
+/// ```
+///
 /// To view the entire code example, see
 /// https://github.com/CodenicCoders/codenic_bloc_use_case/tree/master/example
 
 Future<void> main() async {
+  Bloc.observer = SimpleBlocObserver();
+
   print(
     'Enter [0] for Runner, '
     '[1] for Watcher, '
@@ -27,23 +34,18 @@ Future<void> main() async {
 
   final input = stdin.readLineSync(encoding: utf8);
 
-  await BlocOverrides.runZoned(
-    () async {
-      switch (input) {
-        case '0':
-          await runner();
-          break;
-        case '1':
-          await watcher();
-          break;
-        case '2':
-          await paginator();
-          break;
-        case '3':
-          await batchRunner();
-          break;
-      }
-    },
-    blocObserver: SimpleBlocObserver(),
-  );
+  switch (input) {
+    case '0':
+      await runner();
+      break;
+    case '1':
+      await watcher();
+      break;
+    case '2':
+      await paginator();
+      break;
+    case '3':
+      await batchRunner();
+      break;
+  }
 }

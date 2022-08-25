@@ -29,7 +29,7 @@ abstract class WatcherState with EquatableMixin {
 /// {@endtemplate}
 class WatcherInitial extends WatcherState {
   /// {@macro WatcherInitial}
-  const WatcherInitial(int watchToken) : super(watchToken);
+  const WatcherInitial(super.watchToken);
 }
 
 /// {@template StartWatching}
@@ -39,7 +39,7 @@ class WatcherInitial extends WatcherState {
 /// {@endtemplate}
 class StartWatching extends WatcherState {
   /// {@macro StartWatching}
-  const StartWatching(int watchToken) : super(watchToken);
+  const StartWatching(super.watchToken);
 }
 
 /// {@template StartWatchFailed}
@@ -117,5 +117,5 @@ class WatchDataReceived<RE> extends WatcherState {
 /// {@endtemplate}
 class WatchDone extends WatcherState {
   /// {@macro WatchDone}
-  const WatchDone(int watchToken) : super(watchToken);
+  const WatchDone(super.watchToken);
 }

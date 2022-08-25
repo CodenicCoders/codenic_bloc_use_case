@@ -77,7 +77,7 @@ abstract class BaseUseCase<P, L, R> {
 /// {@endtemplate}
 abstract class DistinctCubit<S> extends Cubit<S> {
   /// {@macro DistinctCubit}
-  DistinctCubit(S initialState) : super(initialState);
+  DistinctCubit(super.initialState);
 
   /// The initial action token.
   ///

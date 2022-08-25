@@ -29,7 +29,7 @@ abstract class BatchRunnerState with EquatableMixin {
 /// {@endtemplate}
 class BatchRunnerInitial extends BatchRunnerState {
   /// {@macro BatchRunnerInitial}
-  const BatchRunnerInitial(int batchRunToken) : super(batchRunToken);
+  const BatchRunnerInitial(super.batchRunToken);
 }
 
 /// {@template BatchRunning}
@@ -39,7 +39,7 @@ class BatchRunnerInitial extends BatchRunnerState {
 /// {@endtemplate}
 class BatchRunning extends BatchRunnerState {
   /// {@macro BatchRunning}
-  const BatchRunning(int batchRunToken) : super(batchRunToken);
+  const BatchRunning(super.batchRunToken);
 }
 
 /// {@template BatchRunFailed}

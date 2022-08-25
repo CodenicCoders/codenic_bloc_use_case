@@ -83,8 +83,7 @@ Future<void> paginator() async {
 }
 
 void printPaginateResults(
-  Paginator<PaginateFruitsParams, Failure, PaginateFruitsResult, String>
-      paginator,
+  Paginator<PaginateFruitsParams, Failure, String> paginator,
 ) {
   print('');
 
@@ -114,17 +113,16 @@ void printPaginateResults(
 
 /// A paginator that accepts a list of fruits then returns them in a paginated
 /// manner.
-class PaginateFruits extends Paginator<PaginateFruitsParams, Failure,
-    PaginateFruitsResult, String> {
+class PaginateFruits extends Paginator<PaginateFruitsParams, Failure, String> {
   /// If `true`, then the [loadFirstPage] and [loadNextPage] will return a
   /// [Failure]. Otherwise, if `false`, then the methods will execute
   /// accordingly.
   bool testFail = false;
 
   @override
-  Future<Either<Failure, PaginateFruitsResult>> onCall(
+  Future<Either<Failure, PageResult<String>>> onCall(
     PaginateFruitsParams params, [
-    PaginateFruitsResult? previousPageResult,
+    PageResult<String>? previousPageResult,
   ]) async {
     if (params.itemsPerPage < 1) {
       // When the items per page is less than 1, then a left value is returned
@@ -164,8 +162,7 @@ class PaginateFruitsParams {
 
 /// The right value for [PaginateFruits] containing the next page of fruits.
 class PaginateFruitsResult extends PageResult<String> {
-  PaginateFruitsResult(Iterable<String> items, dynamic nextPageToken)
-      : super(items, nextPageToken);
+  PaginateFruitsResult(super.items, super.nextPageToken);
 
   @override
   String toString() => items.toString();

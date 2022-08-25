@@ -33,7 +33,7 @@ abstract class PaginatorState with EquatableMixin {
 /// {@endtemplate}
 class PaginatorInitial extends PaginatorState {
   /// {@macro PaginatorInitial}
-  const PaginatorInitial(int paginateToken) : super(paginateToken);
+  const PaginatorInitial(super.paginateToken);
 }
 
 /// {@template FirstPageLoading}
@@ -107,5 +107,5 @@ class PageLoadSuccess<R extends Object> extends PaginatorState {
 /// {@endtemplate}
 class LastPageLoaded extends PaginatorState {
   /// {@macro LastPageLoaded}
-  const LastPageLoaded(int paginateToken) : super(paginateToken);
+  const LastPageLoaded(super.paginateToken);
 }

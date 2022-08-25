@@ -29,7 +29,7 @@ abstract class RunnerState with EquatableMixin {
 /// {@endtemplate}
 class RunnerInitial extends RunnerState {
   /// {@macro RunnerInitial}
-  const RunnerInitial(int runToken) : super(runToken);
+  const RunnerInitial(super.runToken);
 }
 
 /// {@template Running}
@@ -39,7 +39,7 @@ class RunnerInitial extends RunnerState {
 /// {@endtemplate}
 class Running extends RunnerState {
   /// {@macro Running}
-  const Running(int runToken) : super(runToken);
+  const Running(super.runToken);
 }
 
 /// {@template RunFailed}
