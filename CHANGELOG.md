@@ -1,3 +1,6 @@
+## 2.0.0
+– Reduce generic types of `Watcher` and `Paginator`
+
 ## 1.0.0
 – Migrate from `dartz` to `fpdart`
 
