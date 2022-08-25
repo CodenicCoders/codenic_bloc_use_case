@@ -14,21 +14,19 @@ part 'watcher_state.dart';
 /// An abstract use case for running a stream asynchronously via a cubit which
 /// accepts a [P] parameter for creating the stream.
 ///
-/// The stream is created from the obtained [R] [VerboseStream] when [watch] is
-/// executed successfully. [L] is the error returned when stream creation fails.
+/// The stream is created from the obtained [VerboseStream<L, R>] when [watch] 
+/// is executed successfully. [L] is the error returned when stream creation 
+/// fails.
 ///
-/// The created stream emits either an [LE] error event or an [RE] data event.
-///
-/// A custom [R] [VerboseStream] can be provided. If none, then set this to
-/// `VerboseStream<LE, RE>`.
+/// The created stream emits either an [L] error event or an [R] data event.
 ///
 /// {@endtemplate}
-abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
-    extends DistinctCubit<WatcherState> with BaseUseCase<P, L, R> {
+abstract class Watcher<P, L, R> extends DistinctCubit<WatcherState>
+    with BaseUseCase<P, L, VerboseStream<L, R>> {
   /// {@macro Watcher}
   Watcher() : super(const WatcherInitial(DistinctCubit.initialActionToken));
 
-  StreamSubscription<RE>? _streamSubscription;
+  StreamSubscription<R>? _streamSubscription;
 
   /// The latest value emitted by calling [watch] which can either reference
   /// the [leftValue] or the [rightValue].
@@ -37,7 +35,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   ///
   /// If [watch] has not been called even once, then this is `null`.
   @override
-  Either<L, R>? get value => super.value;
+  Either<L, VerboseStream<L, R>>? get value => super.value;
 
   /// {@template Watcher.leftValue}
   ///
@@ -58,7 +56,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   ///
   /// {@endtemplate}
   @override
-  R? get rightValue => super.rightValue;
+  VerboseStream<L, R>? get rightValue => super.rightValue;
 
   /// {@template Watcher.event}
   ///
@@ -71,13 +69,13 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   /// is `null`.
   ///
   /// {@endtemplate}
-  Either<LE, RE>? _event;
+  Either<L, R>? _event;
 
   /// {@macro Watcher.event}
-  Either<LE, RE>? get event => _event;
+  Either<L, R>? get event => _event;
 
   @protected
-  set event(Either<LE, RE>? newEvent) {
+  set event(Either<L, R>? newEvent) {
     _event = newEvent;
     newEvent?.fold((l) => _leftEvent = l, (r) => _rightEvent = r);
   }
@@ -90,10 +88,10 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   /// once, then this is `null`.
   ///
   /// {@endtemplate}
-  LE? _leftEvent;
+  L? _leftEvent;
 
   /// {@macro Watcher.errorEvent}
-  LE? get leftEvent => _leftEvent;
+  L? get leftEvent => _leftEvent;
 
   /// {@template Watcher.rightEvent}
   ///
@@ -103,10 +101,10 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
   /// once, then this is `null`.
   ///
   /// {@endtemplate}
-  RE? _rightEvent;
+  R? _rightEvent;
 
   /// {@macro Watcher.rightEvent}
-  RE? get rightEvent => _rightEvent;
+  R? get rightEvent => _rightEvent;
 
   @override
   Future<void> close() {
@@ -149,7 +147,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
               () {
                 event = Right(data);
 
-                return WatchDataReceived<RE>(data, actionToken);
+                return WatchDataReceived<R>(data, actionToken);
               },
             ),
             onError: (error) => distinctEmit(
@@ -157,7 +155,7 @@ abstract class Watcher<P, L, R extends VerboseStream<LE, RE>, LE, RE>
               () {
                 event = Left(error);
 
-                return WatchErrorReceived<LE>(error, actionToken);
+                return WatchErrorReceived<L>(error, actionToken);
               },
             ),
             onDone: () => distinctEmit(

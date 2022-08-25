@@ -31,7 +31,6 @@ with the help of the [dartz](https://github.com/spebbe/dartz) package.
  
 This section contains detailed information for the following topics:
  
-- [The Runner Use Case](#the-runner-use-case)
   - [Creating a Runner](#creating-a-runner)
   - [Using a Runner](#using-a-runner)
 - [The Paginator Use Case](#the-paginator-use-case)
@@ -305,7 +304,7 @@ event.
  
 Call the `Watcher.watch()` to start creating and listening to a stream. This 
 returns a `Left` value when the stream initialization fails. When the stream 
-setup succeeds, a `Right` value instance of `VerboseStream` will be provided.
+setup succeeds, a instance of `VerboseStream<Left, Right>` will be provided.
  
 A `VerboseStream` contains the stream being listened to and an error converter 
 which converts the error received by the stream to the specified `Left` error 
@@ -320,8 +319,7 @@ docs.
  
 ```dart
 /// A watcher for streaming fruits that goes inside the fruit basket.
-class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
-   VerboseStream<Failure, FruitBasket>, Failure, FruitBasket> {
+class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure, FruitBasket> {
   StreamController<FruitBasket>? streamController;
   
   int? basketCapacity;

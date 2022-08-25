@@ -72,9 +72,7 @@ Future<void> watcher() async {
 }
 
 void printWatchResults(
-  Watcher<WatchFruitBasketParams, Failure, VerboseStream<Failure, FruitBasket>,
-          Failure, FruitBasket>
-      watcher,
+  Watcher<WatchFruitBasketParams, Failure, FruitBasket> watcher,
 ) {
   print('');
 
@@ -107,8 +105,8 @@ void printWatchResults(
 }
 
 /// A watcher for streaming fruits that goes inside the fruit basket.
-class WatchFruitBasket extends Watcher<WatchFruitBasketParams, Failure,
-    VerboseStream<Failure, FruitBasket>, Failure, FruitBasket> {
+class WatchFruitBasket
+    extends Watcher<WatchFruitBasketParams, Failure, FruitBasket> {
   StreamController<FruitBasket>? streamController;
 
   int? basketCapacity;
