@@ -11,7 +11,7 @@ Cubits.
 > This is an extension of the [bloc](https://github.com/felangel/bloc/tree/master/packages/bloc) 
 package.
  
-> This uses the [dartz](https://github.com/spebbe/dartz) package and extensively 
+> This uses the [fpdart](https://github.com/SandroMaglione/fpdart) package and extensively 
 makes use of its `Either` monad for managing union types.
  
 Inspired by Reso Coder's [Flutter TDD Clean Architecture](https://resocoder.com/flutter-clean-architecture-tdd/).
