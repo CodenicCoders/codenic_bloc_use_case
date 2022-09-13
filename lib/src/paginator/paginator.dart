@@ -125,6 +125,8 @@ abstract class Paginator<P, L, R extends Object>
 
     await ensureAsync();
 
+    if (isClosed) return;
+
     const pageIndex = _initialPageIndex + 1;
 
     if (distinctEmit(
@@ -136,6 +138,8 @@ abstract class Paginator<P, L, R extends Object>
     }
 
     final result = await onCall(params);
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,
@@ -182,6 +186,8 @@ abstract class Paginator<P, L, R extends Object>
 
     await ensureAsync();
 
+    if (isClosed) return;
+
     final pageIndex = _currentPageIndex + 1;
 
     if (distinctEmit(actionToken, () {
@@ -195,6 +201,8 @@ abstract class Paginator<P, L, R extends Object>
     }
 
     final result = await onCall(_params as P, rightValue);
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,
@@ -227,6 +235,8 @@ abstract class Paginator<P, L, R extends Object>
     final actionToken = requestNewActionToken();
 
     await ensureAsync();
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,

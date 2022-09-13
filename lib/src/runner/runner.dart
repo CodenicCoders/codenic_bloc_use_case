@@ -61,6 +61,8 @@ abstract class Runner<P, L, R> extends DistinctCubit<RunnerState>
 
     await ensureAsync();
 
+    if (isClosed) return;
+
     if (distinctEmit(
           actionToken,
           () => Running(actionToken),
@@ -70,6 +72,8 @@ abstract class Runner<P, L, R> extends DistinctCubit<RunnerState>
     }
 
     final result = await onCall(params);
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,
@@ -90,6 +94,8 @@ abstract class Runner<P, L, R> extends DistinctCubit<RunnerState>
     final actionToken = requestNewActionToken();
 
     await ensureAsync();
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,

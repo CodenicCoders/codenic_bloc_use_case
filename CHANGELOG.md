@@ -1,3 +1,8 @@
+## 2.0.2
+
+- BUGFIX: Do not emit state when respective use case is closed
+- Bump dependencies
+
 ## 2.0.0
 
 - Reduce generic types of `Watcher` and `Paginator`
@@ -23,7 +28,7 @@
 
 ## 0.1.0-dev.5
 
-- Remove `L` and `R` generic types in `BatchRunner`, `BatchRunResult` and 
+- Remove `L` and `R` generic types in `BatchRunner`, `BatchRunResult` and
   `UseCaseFactory`
 
 ## 0.1.0-dev.4

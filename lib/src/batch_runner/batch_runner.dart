@@ -109,11 +109,15 @@ class BatchRunner<P1, P2> extends DistinctCubit<BatchRunnerState> {
 
     await ensureAsync();
 
+    if (isClosed) return;
+
     if (distinctEmit(actionToken, () => BatchRunning(actionToken)) == null) {
       return;
     }
 
     final result = await onCall(params);
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,
@@ -130,6 +134,8 @@ class BatchRunner<P1, P2> extends DistinctCubit<BatchRunnerState> {
     final actionToken = requestNewActionToken();
 
     await ensureAsync();
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,

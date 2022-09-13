@@ -125,6 +125,8 @@ abstract class Watcher<P, L, R> extends DistinctCubit<WatcherState>
 
     await (_streamSubscription?.cancel() ?? ensureAsync());
 
+    if (isClosed) return;
+
     if (distinctEmit(
           actionToken,
           () => StartWatching(actionToken),
@@ -135,6 +137,8 @@ abstract class Watcher<P, L, R> extends DistinctCubit<WatcherState>
 
     final result = await onCall(params);
 
+    if (isClosed) return;
+
     distinctEmit(actionToken, () {
       value = result;
 
@@ -142,26 +146,38 @@ abstract class Watcher<P, L, R> extends DistinctCubit<WatcherState>
         (l) => StartWatchFailed<L>(l, actionToken),
         (r) {
           _streamSubscription = r.listen(
-            (data) => distinctEmit(
-              actionToken,
-              () {
-                event = Right(data);
+            (data) {
+              if (isClosed) return;
 
-                return WatchDataReceived<R>(data, actionToken);
-              },
-            ),
-            onError: (error) => distinctEmit(
-              actionToken,
-              () {
-                event = Left(error);
+              distinctEmit(
+                actionToken,
+                () {
+                  event = Right(data);
 
-                return WatchErrorReceived<L>(error, actionToken);
-              },
-            ),
-            onDone: () => distinctEmit(
-              actionToken,
-              () => WatchDone(actionToken),
-            ),
+                  return WatchDataReceived<R>(data, actionToken);
+                },
+              );
+            },
+            onError: (error) {
+              if (isClosed) return;
+
+              distinctEmit(
+                actionToken,
+                () {
+                  event = Left(error);
+
+                  return WatchErrorReceived<L>(error, actionToken);
+                },
+              );
+            },
+            onDone: () {
+              if (isClosed) return;
+
+              distinctEmit(
+                actionToken,
+                () => WatchDone(actionToken),
+              );
+            },
             cancelOnError: cancelOnError,
           );
 
@@ -177,6 +193,8 @@ abstract class Watcher<P, L, R> extends DistinctCubit<WatcherState>
     final actionToken = requestNewActionToken();
 
     await (_streamSubscription?.cancel() ?? ensureAsync());
+
+    if (isClosed) return;
 
     distinctEmit(
       actionToken,

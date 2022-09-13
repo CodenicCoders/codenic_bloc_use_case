@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:codenic_bloc_use_case/codenic_bloc_use_case.dart';
 import 'package:test/test.dart';
-import 'package:very_good_analysis/very_good_analysis.dart';
 
 class TestDivideInteger extends BaseUseCase<int, String, int>
     with EquatableMixin {
