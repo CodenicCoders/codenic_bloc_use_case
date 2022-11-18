@@ -140,7 +140,7 @@ abstract class Watcher<P, L, R> extends DistinctCubit<WatcherState>
     if (isClosed) return;
 
     distinctEmit(actionToken, () {
-      value = result;
+      setParamsAndValue(params, result);
 
       return result.fold(
         (l) => StartWatchFailed<L>(l, actionToken),

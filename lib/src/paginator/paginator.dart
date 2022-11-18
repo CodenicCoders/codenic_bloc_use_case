@@ -112,8 +112,11 @@ abstract class Paginator<P, L, R extends Object>
     P params, [
     PageResult<R>? previousPageResult,
   ]) async {
-    value = await onCall(params, previousPageResult);
-    return value!;
+    final value = await onCall(params, previousPageResult);
+
+    setParamsAndValue(params, value);
+
+    return value;
   }
 
   /// Loads the first page.
@@ -144,7 +147,7 @@ abstract class Paginator<P, L, R extends Object>
     distinctEmit(
       actionToken,
       () {
-        value = result;
+        setParamsAndValue(params, result);
 
         return result.fold(
           (l) => PageLoadFailed<L>(l, pageIndex, actionToken),
@@ -207,7 +210,7 @@ abstract class Paginator<P, L, R extends Object>
     distinctEmit(
       actionToken,
       () {
-        value = result;
+        setParamsAndValue(_params as P, result);
 
         return result.fold(
           (l) => PageLoadFailed<L>(l, pageIndex, actionToken),

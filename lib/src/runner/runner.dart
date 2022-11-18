@@ -78,7 +78,7 @@ abstract class Runner<P, L, R> extends DistinctCubit<RunnerState>
     distinctEmit(
       actionToken,
       () {
-        value = result;
+        setParamsAndValue(params, result);
 
         return result.fold(
           (l) => RunFailed(l, actionToken),

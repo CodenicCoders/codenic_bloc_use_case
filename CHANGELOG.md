@@ -1,3 +1,8 @@
+## 2.1.0+1
+
+- Add `params`, `leftParams` and `rightParams` in all use cases
+- Bump dependencies
+
 ## 2.0.2
 
 - BUGFIX: Do not emit state when respective use case is closed

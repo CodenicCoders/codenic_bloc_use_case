@@ -166,6 +166,93 @@ void main() {
       );
 
       group(
+        'params',
+        () {
+          blocTest<Runner<int, String, int>, RunnerState>(
+            'should identify if last emitted params is a success params',
+            build: TestNextEvenNumber.new,
+            act: (runner) async {
+              await runner.run(params: 1);
+              await runner.run(params: 2);
+            },
+            verify: (runner) => expect(runner.params?.isRight(), true),
+          );
+
+          blocTest<Runner<int, String, int>, RunnerState>(
+            'should identify if last emitted params is an error params',
+            build: TestNextEvenNumber.new,
+            act: (runner) async {
+              await runner.run(params: 2);
+              await runner.run(params: 1);
+            },
+            verify: (runner) => expect(runner.params?.isLeft(), true),
+          );
+
+          blocTest<Runner<int, String, int>, RunnerState>(
+            'should clear params when reset',
+            build: TestNextEvenNumber.new,
+            act: (runner) async {
+              await runner.run(params: 2);
+              await runner.reset();
+            },
+            verify: (runner) => expect(runner.params, null),
+          );
+        },
+      );
+
+      group(
+        'left params',
+        () {
+          blocTest<Runner<int, String, int>, RunnerState>(
+            'should still have reference to the last error params when runner '
+            'succeeds',
+            build: TestNextEvenNumber.new,
+            act: (runner) async {
+              await runner.run(params: 1);
+              await runner.run(params: 2);
+            },
+            verify: (runner) => expect(runner.leftParams, 1),
+          );
+
+          blocTest<Runner<int, String, int>, RunnerState>(
+            'should clear left params when reset',
+            build: TestNextEvenNumber.new,
+            act: (runner) async {
+              await runner.run(params: 1);
+              await runner.reset();
+            },
+            verify: (runner) => expect(runner.leftParams, null),
+          );
+        },
+      );
+
+      group(
+        'right params',
+        () {
+          blocTest<Runner<int, String, int>, RunnerState>(
+            'should still have reference to the last success params when '
+            'runner fails',
+            build: TestNextEvenNumber.new,
+            act: (runner) async {
+              await runner.run(params: 2);
+              await runner.run(params: 1);
+            },
+            verify: (runner) => expect(runner.rightParams, 2),
+          );
+
+          blocTest<Runner<int, String, int>, RunnerState>(
+            'should clear right params when reset',
+            build: TestNextEvenNumber.new,
+            act: (runner) async {
+              await runner.run(params: 2);
+              await runner.reset();
+            },
+            verify: (runner) => expect(runner.rightParams, null),
+          );
+        },
+      );
+
+      group(
         'reset',
         () {
           blocTest<Runner<int, String, int>, RunnerState>(

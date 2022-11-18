@@ -11,8 +11,8 @@ import 'package:meta/meta.dart';
 abstract class BaseUseCase<P, L, R> {
   /// {@template BaseUseCase.value}
   ///
-  /// The latest value which can either reference the [leftValue] or the
-  /// [rightValue].
+  /// The last [L] or [R] value produced by the use case which can either
+  /// reference the [leftValue] or the [rightValue].
   ///
   /// This can be used to determine which is latest among the two values.
   ///
@@ -22,15 +22,9 @@ abstract class BaseUseCase<P, L, R> {
   /// {@macro BaseUseCase.value}
   Either<L, R>? get value => _value;
 
-  @protected
-  set value(Either<L, R>? newValue) {
-    _value = newValue;
-    newValue?.fold((l) => _leftValue = l, (r) => _rightValue = r);
-  }
-
   /// {@template BaseUseCase.leftValue}
   ///
-  /// The last error value.
+  /// The last error value by the use case.
   ///
   /// {@endtemplate}
   L? _leftValue;
@@ -40,7 +34,7 @@ abstract class BaseUseCase<P, L, R> {
 
   /// {@template BaseUseCase.rightValue}
   ///
-  /// The last success value.
+  /// The last success value by the use case.
   ///
   /// {@endtemplate}
   R? _rightValue;
@@ -48,14 +42,70 @@ abstract class BaseUseCase<P, L, R> {
   /// {@macro BaseUseCase.rightValue}
   R? get rightValue => _rightValue;
 
+  /// {@template BaseUseCase.params}
+  ///
+  /// The last params used to execute the use case.
+  ///
+  /// This can either reference the [leftParams] or the [rightParams] depending
+  /// whether the use case has failed or suceeded, respectively.
+  ///
+  /// {@endtemplate}
+  Either<P, P>? _params;
+
+  /// {@macro BaseUseCase.params}
+  Either<P, P>? get params => _params;
+
+  /// {@template BaseUseCase.leftParams}
+  ///
+  /// The last params used to execute the use case when it failed.
+  ///
+  /// {@endtemplate}
+  P? _leftParams;
+
+  /// {@macro BaseUseCase.leftParams}
+  P? get leftParams => _leftParams;
+
+  /// {@template BaseUseCase.rightParams}
+  ///
+  /// The last params used to execute the use case when it succeeded.
+  ///
+  /// {@endtemplate}
+  P? _rightParams;
+
+  /// {@macro BaseUseCase.rightParams}
+  P? get rightParams => _rightParams;
+
   /// The use case action callback.
   @protected
   Future<Either<L, R>> onCall(P params);
 
-  /// Executes the use case action and assigns a new [value] once completed.
+  /// Executes the use case action and assigns a new [value] and [params] once
+  /// it completes.
   Future<Either<L, R>> call(P params) async {
-    value = await onCall(params);
-    return value!;
+    final value = await onCall(params);
+
+    setParamsAndValue(params, value);
+
+    return value;
+  }
+
+  /// Sets the [params] and [value] of the use case.
+  @protected
+  void setParamsAndValue(P params, Either<L, R> value) {
+    _value = value;
+
+    value.fold(
+      (l) {
+        _leftValue = l;
+        _params = Left(params);
+        _leftParams = params;
+      },
+      (r) {
+        _rightValue = r;
+        _params = Right(params);
+        _rightParams = params;
+      },
+    );
   }
 
   /// Clears all the data.
@@ -63,6 +113,10 @@ abstract class BaseUseCase<P, L, R> {
     _leftValue = null;
     _rightValue = null;
     _value = null;
+
+    _leftParams = null;
+    _rightParams = null;
+    _params = null;
   }
 }
 
